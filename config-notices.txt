@@ -1,0 +1,35 @@
+﻿=======================================================================
+Raspberry configuration:
+
+Install apache, MySQL, php.
+sudo apt-get install apache2
+
+=======================================================================
+Configuration of git repository:
+
+Create the project repository using web interface of github.com
+and clone it:
+cd e:/work/Projects/Software/
+do it once at initialisation:
+git clone https://github.com/paulau/Air-CoCo.git
+cd Air-CoCo
+
+
+git add file.py
+git status
+git commit
+or
+git commit -m "Clima Monitoring, Ventilation Control, and Visualisation. Initial commit"
+
+=======================================================================
+Some data processing operations:
+
+cd /home/pi/Steuerung-Monitoring/
+tar -cf data-archive.tar prefix_*
+gzip data-archive.tar
+sudo -s
+rm prefix_*
+ls -s1
+
+
+
