@@ -1,25 +1,44 @@
 ﻿=======================================================================
 Raspberry configuration:
 
-Install apache, MySQL, php.
+1) clone the project from github:
+git clone https://github.com/paulau/Air-CoCo.git Steuerung-Monitoring
+
+2) Set the autorun:
+sudo python /home/pi/Steuerung-Monitoring/monicontrol.py /home/pi/Steuerung-Monitoring/data/ 1>  /home/pi/tmp_out.txt 2> /home/pi/tmp_err.txt &
+
+3) Install apache, MySQL, php.
 sudo apt-get install apache2
+
+4) move content of www/ into /var/www/html/ or to according folder of website
+
+5) sudo apt-get install mysql-server
+
+6) sudo apt-get install python-mysqldb
 
 =======================================================================
 Configuration of git repository:
 
-Create the project repository using web interface of github.com
-and clone it:
+Create the project repository using web interface of github.com and clone it:
 cd e:/work/Projects/Software/
 do it once at initialisation:
 git clone https://github.com/paulau/Air-CoCo.git
 cd Air-CoCo
 
+use git commands eg:
 
 git add file.py
+git rm file.x
 git status
 git commit
-or
+use: Esc :wq Enter to finish commit
+or  fast one line commit:
 git commit -m "Clima Monitoring, Ventilation Control, and Visualisation. Initial commit"
+This will do a local version. Upload it: 
+git push -u origin master
+
+gitk - GUI to see Hystory of Repository
+
 
 =======================================================================
 Some data processing operations:

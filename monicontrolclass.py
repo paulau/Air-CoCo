@@ -31,9 +31,10 @@ import time, datetime, sys, os  # system  and time functions
 import imp  					# to read the variables from py files
 from datetime import date, timedelta
 import glob
+import socket, threading
 
 
-class MoniControl():
+class MoniControl(threading.Thread):
 	# constructor. Initialise things  (allocate memory)
 	# has one argument, the name of the settings file.
 	def __init__(self, settingsfname):
@@ -44,17 +45,9 @@ class MoniControl():
 		self.initialise_control_variables()
 		self.initialise_wind_rain_monitoring()
 		self.initialise_output()
-		#self.initialise_server()
+		self.initialise_server_thread()
 		
 		print("	Constructor Done")
-
-	def initialise_server(self):
-		# This method starts thread, which listens to certain port at 
-		# current address, to provide responces to the client software 
-		# about the state of ventilatio.
-		# Optionally, the server could be used to reset parameters of 
-		# ventilation
-		print ("	Server initialisation")
 
 
 	def ini_parameters(self, settingsfname):
@@ -236,6 +229,7 @@ class MoniControl():
 		# self.free_server()
 		GPIO.cleanup()	
 		sys.stdout.flush()
+		self.clean() # clean server part
 		self.cleaned = 1
 		sys.exit(0)
 
@@ -256,11 +250,11 @@ class MoniControl():
 	
 	def save_data(self):
 		# Form string with date time, the values of temperatures inside, outside, the state of wind rain automation and the state of ventilator:
-		OString = self.MeasurementTime.strftime("%d.%m.%Y %H:%M:%S")		
+		self.OString = self.MeasurementTime.strftime("%d.%m.%Y %H:%M:%S")		
 		# error can appear actually here during transformation from "None" to real value :
-		OString= OString  + "	" +  "{:.2f}".format(self.t_inside) + "	" + "{:.2f}".format(self.t_outside) + "	" +  "{:.0f}".format(self.windRainState) + "	" + str(self.StateOfVentillator) + "\n"  # comment last summand if used with print	
-		print(OString)
-		self.f.write(OString) # output to file
+		self.OString= self.OString  + "	" +  "{:.2f}".format(self.t_inside) + "	" + "{:.2f}".format(self.t_outside) + "	" +  "{:.0f}".format(self.windRainState) + "	" + str(self.StateOfVentillator) + "\n"  # comment last summand if used with print	
+		sys.stdout.write(self.OString) 
+		self.f.write(self.OString) # output to file
 		#f.flush()  #could be "reason" of demage of MicroSDs.  Comment it. No need to see current value in file immediately
 
 	def control_ventilation(self):
@@ -340,3 +334,85 @@ class MoniControl():
 		self.f.close()
 		fname  = self.P.fileprefix + self.MeasurementTime.strftime("%Y_%m_%d_%H_%M") + ".txt" # _%M				
 		self.f = open(self.opath + fname, 'w')
+
+	# ==================================================================
+	# The functions 
+	#  initialise_server_thread()
+	#  run()
+	#  clean()
+	#  set_server_responce_message(...)
+	#  are responsible for communication of this program with 
+	#  the external clients via socket
+	# The functioning is incorporated into class MoniControl based on 
+	# examples in Client-Server folder
+	
+	def initialise_server_thread(self):
+		# This method starts thread, which listens to certain port at 
+		# current address, to provide responces to the client software 
+		# about the state of ventilatin.
+		# Optionally, the server could be used to reset parameters of 
+		# ventilation
+		
+		threading.Thread.__init__(self)
+		self.threadID = 1
+		self.name = "Thread-1"      
+		self.HOST = 'localhost'  # ' ' Symbolic name, meaning all available interfaces
+		self.PORT = 40012 		# 8888 Arbitrary non-privileged port
+		self.backlog = 10		# max number of connections. only one. check 0
+		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		print 'Socket created'
+		#Bind socket to local host and port
+		try:
+			self.s.bind((self.HOST, self.PORT))
+		except socket.error as msg:
+			print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+			sys.exit()
+		print 'Socket bind complete'
+		#Start listening on socket
+		self.s.listen(self.backlog)
+		print 'Socket now listening'
+		self.cond = 1
+		
+		self.server_responce_message = "Hallo I am your server"
+		
+		self.start()
+		
+		print ("	Server initialisation")
+		
+	def run(self):
+		print "Starting " + self.name
+		#now keep talking with the client
+		while self.cond:
+			#wait to accept a connection - blocking call
+			conn, addr = self.s.accept()
+			buf = conn.recv(64)
+			print 'Connected with ' + addr[0] + ':' + str(addr[1])
+			print 'Received: ' + buf
+			if buf=='GetData': 
+				try:
+					print(buf)
+					# One needs now to send message back!
+					# with some data
+					self.set_server_responce_message()
+					conn.send(self.server_responce_message)
+				except ValueError:
+					print "Not a float"
+		
+			conn.close()
+		
+			if buf=='Stop': 
+				self.s.close()
+		print "Exiting " + self.name 
+		
+	def clean(self):
+		self.cond = 0 # set condition to stop thread loop
+		# send message "Stop" 
+		try:
+			clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			clientsocket.connect((self.HOST, self.PORT))
+			clientsocket.send("Stop")
+		except:
+			pass
+
+	def set_server_responce_message(self):
+		self.server_responce_message = self.OString

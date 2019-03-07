@@ -1,0 +1,156 @@
+body 
+{
+ overflow: scroll;
+}
+
+th, TD 
+{
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 11px; fontsize: 12px
+}
+
+
+#t01 {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+LI 
+{
+    COLOR: #000000         
+}
+
+A 
+{
+    COLOR: #0000FF
+}
+
+A:hover 
+{
+    TEXT-DECORATION: underline; 
+    COLOR: #FF0000
+
+}
+
+
+#txt 
+{
+    COLOR: black
+}
+#navi 
+{
+    COLOR: white; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 11px; 
+    FONT-WEIGHT: bold;     
+    TEXT-DECORATION: underline; 
+    fontsize: 12px
+}
+#lang 
+{
+    COLOR: #ffe0e0; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 9px; 
+    TEXT-DECORATION: none; 
+    fontsize: 10px
+}
+#title 
+{
+    COLOR: #a52928; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 11px; 
+    FONT-WEIGHT: bold; 
+    fontsize: 12px
+}
+
+#ratef 
+{
+    COLOR: #FF005F; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 12px; 
+    FONT-WEIGHT: bold; 
+    fontsize: 12px
+}
+
+
+
+
+
+
+#formtitle 
+{
+    COLOR: #71879a; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 11px; 
+    FONT-WEIGHT: bold; 
+    fontsize: 12px
+}
+#formlink 
+{
+    COLOR: black; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 9px; 
+    fontsize: 10px
+}
+#catalogtitle 
+{
+    COLOR: #505050; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 11px; 
+    FONT-WEIGHT: bold; 
+    fontsize: 12px
+}
+#catalogtxt 
+{
+    COLOR: black; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 9px; 
+    fontsize: 10px
+}
+#catalognewtxt 
+{
+    COLOR: #71879a; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 9px; 
+    FONT-WEIGHT: bold; 
+    fontsize: 10px
+}
+#catalogvol 
+{
+    COLOR: #a1a1a1; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 10px; 
+    FONT-WEIGHT: bold; 
+    fontsize: 11px
+}
+#copy {
+    COLOR: #202020; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 10px; 
+    FONT-WEIGHT: bold; 
+    fontsize: 11px
+}      
+
+#bowite {
+    COLOR: #FFFFFF; FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif;   
+    FONT-WEIGHT: bold; 
+    fontsize: 18px
+}      
+
+#MainHeader {
+    width: 98%
+}      
+
+#ArtYearsHeader {
+    width: 98%
+}      
+
+#ContentTable {
+    width: 98%
+}      
+
+ 
+
+#tred { border:2px #fff solid; }  
+#tdred { border:0px #fff solid;  }
+
