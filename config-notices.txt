@@ -16,6 +16,8 @@ sudo apt-get install apache2
 
 6) sudo apt-get install python-mysqldb
 
+
+
 =======================================================================
 Configuration of git repository:
 

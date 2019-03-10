@@ -1,2 +1,15 @@
  - at kill -15 processid two times CleanAndExit! Not nice check
  
+ 		#MoniControl
+		# method ini_parameters
+		#command = "sudo python /home/pi/Steuerung-Monitoring/initialiseSQL.py /home/pi/Steuerung-Monitoring/"
+		#os.system(command)  
+		## pushes parameters from settings file into Database
+		## for interaction with Web layer. 
+		## Could be done as class and called without 
+		## system call
+		#
+		## top implemenr read parameters from Database for monicontrol
+		## AirCoCo.Parameters
+
+ 

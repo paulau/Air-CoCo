@@ -4,7 +4,6 @@
 # Usage: see monicontrol.py
 # Einstellungen für Steuerung-Monitoring System Kornkraft.
 
-LoggingInterval = 10			# Sekunde. Zeitinterval zwischen Messungen, Sekunden 
 OpeningTime = 60			# Sekunde. Zeit um Fenster zu offnen
 
 sensor_inside_id =  '28-020d9177a279'	# '28-0415a3e91eff'  # These values of the sensors ids are  specific for 
@@ -13,8 +12,9 @@ sensor_outside_id = '28-02099177d15c'	# '28-0415a40063ff' # each sensor. See 1-w
 RelayK1ControlPin =  16			# GPIO-Pin Nummer für Steuerung von Lüfter
 RelayK2ControlPin =  20			# GPIO-Pin Nummer für Umschaltung von manuel auf auto Steuerung
 RelayK3ControlPin =  21			# GPIO-Pin Nummer für Umschaltung zwischen Auf und Zu.
-GPIOcontactDataInside = 17		# GPIO-Pin Nummer für Ablesung von Innen Fühler
-GPIOcontactDataOutside = 27	 	# GPIO-Pin Nummer für Ablesung von Außen Fühler 
+
+
+LoggingInterval = 10			# Sekunde. Zeitinterval zwischen Messungen, Sekunden 
 fileprefix = "kk002_"			# Präfix von Datei. Alle Dateien starten mit diese Präfix.
 SaveInterval = "%d"     		# "%d" save every new day, "%H" save every new Hour
 
@@ -23,7 +23,6 @@ TdifferenceOff = 1.0			# Kelvin. Schaltet diel Lüftung aus, wenn Außentemperat
 					# Default Wert ist 1 oder grosser, weil Prezision von Fühler ist +-0.5 
 
 Tmin = 14 #ab 27.05.2016		# °C Steuerung wird betätigt nur wenn Innen Temperatur ist grosser als Tmin
-#16 bis 27.05.2016 
 
 MinOffTime = 5				# Minutes. Minimal Zeit zwischen Ende von Lüftung und Start von volgende Lüftung.  
 					# um häufige An- Aus-schaltungen zu vermeiden. 
