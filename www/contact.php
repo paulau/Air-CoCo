@@ -5,7 +5,7 @@ include('header.html');
 echo "
 <!-- <img src='Files/P7060243_w150.JPG' width=150 ><br><br>   -->
 <center>
-<b>Parameter</b>
+<b>Kontakt</b>
 </center>
 
 Phone: +xxxxxx<br><br>

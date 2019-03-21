@@ -1,6 +1,6 @@
-<?php	
+<?php
 
-function GetParameterForm()
+function GetParameterForm($sqluser,$sqlpass,$sqldb,$dbhost)
 	{
 	// This function just read all parameters from Database and 
 	// prints them as filled html form
@@ -14,10 +14,6 @@ function GetParameterForm()
 	// it would be difficult to implement it via processing the settingsMC.py
 	// and adjusting Database. 
 	
-	$sqluser = 'runner';
-	$sqlpass = 'runner123';
-	$sqldb = 'AirCoCo';	
-	$dbhost = 'localhost';
 	$db = mysqli_connect($dbhost, $sqluser, $sqlpass, $sqldb);
 	 
 	if(!$db)
@@ -37,7 +33,8 @@ echo '
 		>	
 	<table>';
 
-
+	// the following code would just take all parameters from database 
+	// and put them as html form
 	while($row = mysqli_fetch_array($result)) {
 		$PName = $row['ParameterName'];
 		$PValue = $row['ParameterValue'];
@@ -54,6 +51,8 @@ echo '
 		</td>
 		</tr>';
 		}
+		
+
 
 echo '
 	</table>    
@@ -70,6 +69,9 @@ echo '
 
 function PrintParameterForm()
 	{
+		
+		MUST GET NOW VALUES FROMDB
+		
 echo '
 	<!-- enctype="multipart/form-data" -->
 	<form 
@@ -286,6 +288,5 @@ echo '
 ';
 
 	}
-
 
 ?>
