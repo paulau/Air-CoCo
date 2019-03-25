@@ -1,7 +1,6 @@
 <?php	
 
 include('header.html');
-include ("statetable.php");
 
 echo "
 <center>
@@ -14,7 +13,6 @@ Temperatur und Luftungszustand in graphische Darstellung:
 <br>
 ";
 
-StateTable();
 
 include("footer.html");
 

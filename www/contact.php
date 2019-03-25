@@ -8,12 +8,11 @@ echo "
 <b>Kontakt</b>
 </center>
 
-Phone: +xxxxxx<br><br>
+Phone: +4917634586859<br><br>
 
-Name<br>
-xxx,  <br>
-xxx, <br>
-xxx <br>
+Name: Pavel Paulau <br>
+
+
 
 
 ";

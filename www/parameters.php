@@ -1,12 +1,8 @@
 <?php	
 
 include('header.html');
-//include ("statetable.php");
-include ("getparameterform.php");
-include ("savetodatabase.php");
+include ("dao.php");
 include ("sqlsettings.php"); // import settings of sql database
-
-//mysqli_connect
 
 
 echo "
@@ -20,9 +16,11 @@ Sie können hier die Steuerung-Monitoring Parameter einstellen:
 ";
 
 //StateTable();
-SaveParametersToDatabase($sqluser,$sqlpass,$sqldb,$dbhost);
-//GetParameterForm($sqluser,$sqlpass,$sqldb,$dbhost); // older verrsion 
-PrintParameterForm();
+
+$p = new parameters($dbhost,$sqluser,$sqlpass,$sqldb);
+
+$p->SaveParametersToDatabase();
+$p->GetParameterForm();
 
 
 include("footer.html");
