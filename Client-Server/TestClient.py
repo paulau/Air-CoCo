@@ -24,7 +24,7 @@ try:
 	clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	clientsocket.connect((HOST, PORT))
 	clientsocket.send(str(message))
-	server_responce = clientsocket.recv(64)
+	server_responce = clientsocket.recv(256)
 	print(server_responce)
 	
 	clientsocket.close()

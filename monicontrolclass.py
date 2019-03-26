@@ -415,4 +415,20 @@ class MoniControl(threading.Thread):
 			pass
 
 	def set_server_responce_message(self):
-		self.server_responce_message = self.OString
+		# self.server_responce_message = self.OString
+		# change responce to json format
+		# to avoid usage of the same variables from different threads
+		# we stay at usage of Ostring and we extract the data from the str
+		
+		tmpstr = self.OString
+		jsonstr = '{'
+		jsonstr = jsonstr + '"datetime":"' + tmpstr.split('\t')[0] + '",'
+		jsonstr = jsonstr + '"tin":' + tmpstr.split('\t')[1] + ','
+		jsonstr = jsonstr + '"tout":' + tmpstr.split('\t')[2] + ','
+		jsonstr = jsonstr + '"WindRainState":' + tmpstr.split('\t')[3] + ','
+		jsonstr = jsonstr + '"FanState":' + tmpstr.split('\t')[4] 
+		jsonstr = jsonstr + '}'
+		
+		self.server_responce_message = jsonstr
+		#"WindowOpenMotorState":1,
+		#"WindowCloseMotorState":1
