@@ -1,7 +1,7 @@
 <?php	
 
 include('header.html');
-include ("dao.php");
+include ("daoparameters.php");
 include ("sqlsettings.php"); // import settings of sql database
 
 

@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 
 include('header.html');
-include ("dao.php");
+
 
 echo "
 <center>
@@ -17,7 +17,19 @@ Steuerung und Monitoring Systeme für Gebäudeabkühlung durch Nachtsluftung!
 <br>
 ";
 
-StateTable();
+include ("statetable.php");
+echo "<br>";
+
+echo "<P id='title'>  </P>";
+echo "<br>";
+
+echo "<P id='datetime'>  </P><br>";
+echo "<P id='tin'>  </P><br>";
+echo "<P id='tout'>  </P><br>";
+
+echo "<A onclick='refresh()'>Testlink</A> &nbsp";
+echo "<br>";
+
 
 include("footer.html");
 
