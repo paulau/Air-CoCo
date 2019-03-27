@@ -16,7 +16,7 @@ sudo apt-get install apache2
 
 6) sudo apt-get install python-mysqldb
 
-
+7) sudo apt-get install python-matplotlib
 
 =======================================================================
 Configuration of git repository:

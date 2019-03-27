@@ -12,21 +12,12 @@
 		#
 		## top implemenr read parameters from Database for monicontrol
 		## AirCoCo.Parameters
-
- - Autoupdate each x sec using javaScript. 
-   php script which returns data in json format
-   java script to initialise table
-   xmlrequests each xxx sec
-   expand table - more data motors
-   
+		
+ - expand table - more data motors
  - password protect
- 
  - visualisation
- 
  - improve daoparameters possibly also wit json or split data and html
- 
  - server command to update parameters
- 
  - check port open or closed server vent
   
  
