@@ -39,12 +39,19 @@ class MoniControl(threading.Thread):
 	# has one argument, the name of the settings file.
 	def __init__(self, settingsfname):
 		
+		
+		
 		self.ini_parameters(settingsfname)
 		self.initialise_temperature_sensors()
 		self.initialise_ventilation_devices()
 		self.initialise_control_variables()
 		self.initialise_wind_rain_monitoring()
 		self.initialise_output()
+		# the following functions are just to initialise all variables for the case
+		# if they are needed immediately below for  requests to the server
+		self.get_data()
+		self.save_data() # to initialise ostring
+		
 		self.initialise_server_thread()
 		
 		print("	Constructor Done")

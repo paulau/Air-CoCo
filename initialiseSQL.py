@@ -12,7 +12,7 @@
 # The Web-layer works however under restricted rights and the user runner
 # is created specially for this layer. 
 
-# This script checks wether the database AirCoCo exists.
+# This script checks wether the database exists.
 # if not, then it creates it and fills its Table Parameters with the 
 # Parameternames and values taken from settingsMC.py file. 
 # there are also some test functions
@@ -36,7 +36,7 @@
 
 import imp  					# to read the variables from py files
 import MySQLdb
-import sys
+import sys, os
 
 #the default username is 'root' and by default there is no password.
 class SQLPar():
@@ -121,16 +121,16 @@ def create_database(SQL, settingsfullfname):
 			pass
 	except:
 		# Database does not exist create it:
-		command = "CREATE DATABASE AirCoCo;"
+		command = "CREATE DATABASE " + SQL.Database + ";"
 		print(command)
 		con = MySQLdb.connect(SQL.Server, SQL.User, SQL.Passwd)
 		cur = con.cursor()
 		cur.execute(command)
-		command = "CREATE TABLE AirCoCo.Parameters(Id INT PRIMARY KEY AUTO_INCREMENT, ParameterName CHAR(255), ParameterValue CHAR(255));"
+		command = "CREATE TABLE " + SQL.Database + ".Parameters(Id INT PRIMARY KEY AUTO_INCREMENT, ParameterName CHAR(255), ParameterValue CHAR(255));"
 		cur.execute(command)		
 		command = "CREATE USER 'runner' IDENTIFIED BY 'runner123';" # to be used in web		
 		cur.execute(command)
-		command = "GRANT ALL PRIVILEGES ON AirCoCo.* TO 'runner';"
+		command = "GRANT ALL PRIVILEGES ON " + SQL.Database + ".* TO 'runner';"
 		cur.execute(command)
 		con.close()
 		
@@ -151,4 +151,6 @@ settingsfullfname = opath + settingsfullfname
 #SQL_test(SQL)
 #settings_test(settingsfullfname)
 create_database(SQL, settingsfullfname)
+
+
 

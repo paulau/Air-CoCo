@@ -1,6 +1,6 @@
 <?php
 
-class parameters {
+class Parameters {
 	
 	var $db;
 	var $table;
@@ -36,6 +36,8 @@ class parameters {
 		$result = mysqli_query($this->db, $sql) or die(mysqli_error());
 	
 		// logically does not belong to dao move to calling php
+		// move it into new View class!!!
+		// see Model View Controller pattern 
 		
 		echo '
 			<!-- enctype="multipart/form-data" -->
