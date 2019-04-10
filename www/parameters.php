@@ -26,7 +26,7 @@ if ($a->Authorised) {
 	
 	$p = new Parameters($dbhost,$sqluser,$sqlpass,$sqldb);
 	$p->SaveParametersToDatabase();
-	$p->GetParameterForm();
+	$p->GetParameterForm();	
 	}
 
 

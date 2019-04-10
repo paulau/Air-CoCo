@@ -32,16 +32,34 @@ import imp  					# to read the variables from py files
 from datetime import date, timedelta
 import glob
 import socket, threading
-
+from settingsFromSQL import *
 
 class MoniControl(threading.Thread):
 	# constructor. Initialise things  (allocate memory)
 	# has one argument, the name of the settings file.
 	def __init__(self, settingsfname):
 		
+		# initialise Folders:
+		# check wether output path is given as argument. 
+		# set the current folder, if the argument is not specified:
+		if (len(sys.argv)==2):
+			self.opath  = sys.argv[1]	
+		else:
+			self.opath = os.getcwd() + "/"
 		
+		# define the path to the main script, which uses the MoniControl class
+		# to get settings file from the same path:
+		self.script_path = os.path.dirname(os.path.abspath(__file__))
+		self.webfolder = '/var/www/html/air-coco/datapics/'
 		
-		self.ini_parameters(settingsfname)
+		time.sleep(60) # wait nearly 1 min till mysql server is started
+		try: # try to get parameters from database. 
+			self.ini_parameters_mysql()
+		except: # and get from file if database makes problems
+			self.ini_parameters(settingsfname)
+		
+		#self.ini_parameters(settingsfname)
+		
 		self.initialise_temperature_sensors()
 		self.initialise_ventilation_devices()
 		self.initialise_control_variables()
@@ -60,28 +78,22 @@ class MoniControl(threading.Thread):
 	def ini_parameters(self, settingsfname):
 		# *********** Parameters Initialisation. ***********************
 		# *********** From command line and from settings*.py **********
-		# check wether output path is given as argument. 
-		# set the current folder, if the argument is not specified:
-		if (len(sys.argv)==2):
-			self.opath  = sys.argv[1]	
-		else:
-			self.opath = os.getcwd() + "/"
-		
-		# define the path to the main script, which uses the MoniControl class
-		# to get settings file from the same path:
-		script_path = os.path.dirname(os.path.abspath(__file__))	
-	
-		# initialise all parameters from the settings class.
-		settingsfullfname = script_path + "/" + settingsfname
-		settingsfullfname = script_path + "/" + settingsfname
 
+		# initialise all parameters from the settings class.
+		settingsfullfname = self.script_path + "/" + settingsfname
 		self.P = imp.load_source('settings', settingsfullfname) # read Parameters
-		
 		print ("	Parameters Initialisation from file:" + settingsfullfname + " complite")
 		
 		#  ****** THE OBJECT self.P CONTAINS NOW ALL PARAMETRS *********
 		#  **************** OF THE settings*.py file *******************
 		#  *************************************************************
+
+	def ini_parameters_mysql(self):
+		print("parametrs will now be initialised")
+		self.P = ParametersFromSQL()
+		print("parametrs are initialised")
+		#print ('P.pin1 =' + P.pin1) 
+		#  ****** THE OBJECT self.P CONTAINS NOW ALL PARAMETRS *********
 
 
 	def initialise_temperature_sensors(self):
@@ -173,10 +185,10 @@ class MoniControl(threading.Thread):
 	def initialise_output(self):
 		# open first file with current time encoded in filename.
 		NowTime = datetime.datetime.today()
-		fname  = self.P.fileprefix + NowTime.strftime("%Y_%m_%d_%H_%M") + ".txt" # _%M
-		self.f = open(self.opath + fname,'a') 
+		self.fname  = self.P.fileprefix + NowTime.strftime("%Y_%m_%d_%H_%M") + ".txt" # _%M
+		self.f = open(self.opath + self.fname,'a') 
 
-		print("	Output file" + self.opath + fname + " is open")
+		print("	Output file" + self.opath + self.fname + " is open")
 
 
 	# A function that reads the data of the temperature sensors. We need it, 
@@ -339,8 +351,19 @@ class MoniControl(threading.Thread):
 	# after some timeinterval e.g. every day or hour etc.
 	def switch_output_file(self):
 		self.f.close()
-		fname  = self.P.fileprefix + self.MeasurementTime.strftime("%Y_%m_%d_%H_%M") + ".txt" # _%M				
-		self.f = open(self.opath + fname, 'w')
+		
+		# visualise data for each finished file:
+		excommand  = 'python ' + self.script_path + '/visu.py' +  ' ' + self.opath + ' ' + self.fname
+		print(excommand)
+		os.system(excommand)
+		
+		# move visualisation files to web folder:
+		excommand = 'mv ' + self.opath + '*.png ' + self.webfolder
+		print(excommand)
+		os.system(excommand)
+		
+		self.fname  = self.P.fileprefix + self.MeasurementTime.strftime("%Y_%m_%d_%H_%M") + ".txt" # _%M
+		self.f = open(self.opath + self.fname, 'w')
 
 	# ==================================================================
 	# The functions 
@@ -393,22 +416,27 @@ class MoniControl(threading.Thread):
 			#wait to accept a connection - blocking call
 			conn, addr = self.s.accept()
 			buf = conn.recv(64)
-			print 'Connected with ' + addr[0] + ':' + str(addr[1])
-			print 'Received: ' + buf
-			if buf=='GetData': 
-				try:
-					print(buf)
-					# One needs now to send message back!
-					# with some data
-					self.set_server_responce_message()
-					conn.send(self.server_responce_message)
-				except ValueError:
-					print "Not a float"
-		
+			#print 'Connected with ' + addr[0] + ':' + str(addr[1])
+			#print 'Received: ' + buf
+			if (addr[0]=='127.0.0.1'): # accept commands only from local host (wevserver)
+				if buf=='GetData': 
+					try:
+						# One needs now to send message back!
+						# with some data
+						self.set_server_responce_message()
+						conn.send(self.server_responce_message)
+					except ValueError:
+						print "Not a float"
+						
+				#if buf=='Stop': 
+				#	self.s.close()
+				
+				if buf=='Reboot': 
+					excommand = 'sudo reboot'
+					os.system(excommand) # reboot to have new parameters working
+
 			conn.close()
-		
-			if buf=='Stop': 
-				self.s.close()
+			
 		print "Exiting " + self.name 
 		
 	def clean(self):

@@ -125,7 +125,8 @@ class Parameters {
 		
 		echo '
 			</table>    
-		
+			<b>Attention! The system will be reboot after pressing the button!</b><br>
+			<b>The pages of the control system will be up to 3 min unavailable!</b><br>
 			<input type="submit" value="Set Parameter!" id= formbutton>
 			</form>';
 		}
@@ -191,7 +192,27 @@ class Parameters {
 				//echo $key . "=". $value ."<br>";
 				$this->FindAndReplace($key, $value);
 				}
+			
+			// After update of parameters in database we should restart monitoring control programm
+			$this->SendRebootRequest();
 			}
+		}
+	
+	function SendRebootRequest() //  to vent server
+		{
+		$service_port = 40012;
+		$address = 'localhost';
+		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP); // Einen TCP/IP-Socket erzeugen. 
+		if ($socket === false) {
+			echo "socket_create() fehlgeschlagen: Grund: " . socket_strerror(socket_last_error()) . "\n";
+			} 
+		$result = socket_connect($socket, $address, $service_port); // Versuche, zu '$address' auf Port '$service_port' zu verbinden 
+		if ($result === false) {
+			echo "socket_connect() fehlgeschlagen.\nGrund: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
+			} 
+		$in = "Reboot";
+		socket_write($socket, $in, strlen($in)); // HTTP HEAD request senden 
+		socket_close($socket);
 		}
 	
 	}

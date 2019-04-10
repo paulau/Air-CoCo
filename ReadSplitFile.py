@@ -1,0 +1,360 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
+import sys, os
+import numpy as np
+import datetime, time
+from datetime import date, timedelta
+
+# ********************************************************************
+# reads data from file with given fid
+# returns:
+# x - set of times,
+# Val - List of sets of values
+ 
+def ReadSplitFileN(input_file, nvalues=1, DateTimeFormat='%d.%m.%Y %H:%M:%S'):  
+	# '%d.%m.%Y %H:%M'  for WUFI
+	# '%d.%m.%Y %H:%M:%S' - default
+	print(input_file)
+	with open(input_file) as f:
+		data = f.read()    
+	data = data.split('\n')	
+	data.pop()  ## remove last element of list since it is just empty element
+
+	tlength = len(data)
+
+	for i in range(0,tlength):
+		data[i] = data[i].replace('\t',' ')  # replace Tab by space
+	
+    
+    
+	j=0
+	for rec in data:
+		#print(rec)
+		if len(rec)<1:
+			print("REMOVED "+str(j))
+			data.pop(j)		
+		j = j+1	
+		
+	tlength = len(data)
+
+	
+	#print("  tlg")
+	#print(tlength)
+	
+	
+	DateM = [row.split(' ')[0] for row in data]
+	TimeM  =  [row.split(' ')[1] for row in data]
+	
+	x = []
+	for i in range(tlength):
+		try:
+			dd = datetime.datetime.strptime(DateM[i] + ' ' + TimeM[i], DateTimeFormat)
+		except:
+			print(DateM[i])
+			print(TimeM[i])
+			print(i)
+		
+			
+		x.append(dd)
+
+	# data file contains values of  nvalues parameters:
+	# note that first two columns in file are date and time:
+	Values = []
+	for i in range(1,nvalues+1):	
+		Val = [row.split(' ')[i+1].replace(',','.') for row in data]
+		Values.append(Val)	
+	return x, Values
+
+
+# ********************************************************************
+# reads data from file with given fid
+# returns:
+# x - set of times,
+# Val - set of values
+ 
+def ReadSplitFile(input_file, nvalues=1, DateTimeFormat='%d.%m.%Y %H:%M:%S', everyn = 0):  
+	# '%d.%m.%Y %H:%M'  for WUFI
+	# '%d.%m.%Y %H:%M:%S' - default
+	
+	with open(input_file) as f:
+		data = f.read()    
+	data = data.split('\n')	
+	data.pop()  ## remove last element of list since it is just empty element
+
+	tlength = len(data)
+    
+	print ("tlength before:")
+	print (tlength)
+
+	data1 = []
+	for i in range(0,tlength):
+		data[i] = data[i].replace('\t',' ')  # replace Tab by space
+		if i%100==0:
+			data1.append(data[i])
+		if i%100000==0:
+			print(i)
+	
+	data = data1
+
+    
+	j=0
+	for rec in data:
+		#print(rec)
+		if len(rec)<1:
+			print("REMOVED "+str(j))
+			data.pop(j)		
+		j = j+1	
+		
+
+
+	tlength = len(data)
+	print ("tlength after:")
+	print (tlength)
+
+	
+	#print("  tlg")
+	#print(tlength)
+	#print(data[1])
+	
+	DateM = [row.split(' ')[0] for row in data]
+	TimeM  =  [row.split(' ')[1] for row in data]
+	
+	x = []
+	for i in range(tlength):
+		try:
+			dd = datetime.datetime.strptime(DateM[i] + ' ' + TimeM[i], DateTimeFormat)
+		except:
+			print(DateM[i])
+			print(TimeM[i])
+			print(i)
+		
+			
+		x.append(dd)
+
+	# data file contains values of  nvalues parameters:
+	# note that first two columns in file are date and time:
+	if (nvalues==1):
+		Val = [row.split(' ')[2].replace(',','.') for row in data]
+		return x, Val
+
+	if (nvalues==2):
+		Val1 = [row.split(' ')[2].replace(',','.') for row in data]
+		Val2 = [row.split(' ')[3].replace(',','.') for row in data]
+		return x, Val1, Val2
+
+	if (nvalues==3):
+		Val1 = [row.split(' ')[2].replace(',','.') for row in data]
+		Val2 = [row.split(' ')[3].replace(',','.') for row in data]
+		Val3 = [row.split(' ')[3].replace(',','.') for row in data]
+		return x, Val1, Val2, Val3
+
+
+
+
+def ReadSplitFileWUFI(input_file, nvalues=1):  
+	
+	with open(input_file) as f:
+		data = f.read()    
+	data = data.split('\n')	
+	data.pop()  ## remove last element of list since it is just empty element
+
+	tlength = len(data)
+
+	for i in range(0,tlength):
+		data[i] = data[i].replace('	',' ')  # replace Tab by space
+	
+	j=0
+	for rec in data:
+		#print(rec)
+		if len(rec)<1:
+			print("REMOVED "+str(j))
+			data.pop(j)		
+		j = j+1	
+		
+	tlength = len(data)
+
+	
+	#print("  tlg")
+	#print(tlength)
+	#print(data[1])
+	
+	DateM = [row.split(' ')[0] for row in data]
+	TimeM  =  [row.split(' ')[1] for row in data]
+	
+	x = []
+	for i in range(tlength):
+		dd = datetime.datetime.strptime(DateM[i] + ' ' + TimeM[i], Da) #:%S
+		x.append(dd)
+
+	# data file contains values of  nvalues parameters:
+	# note that first two columns in file are date and time:
+	if (nvalues==1):
+		Val = [row.split(' ')[2].replace(',','.') for row in data]
+		return x, Val
+
+	if (nvalues==2):
+		Val1 = [row.split(' ')[2].replace(',','.') for row in data]
+		Val2 = [row.split(' ')[3].replace(',','.') for row in data]
+		return x, Val1, Val2
+
+	if (nvalues==3):
+		Val1 = [row.split(' ')[2].replace(',','.') for row in data]
+		Val2 = [row.split(' ')[3].replace(',','.') for row in data]
+		Val3 = [row.split(' ')[3].replace(',','.') for row in data]
+		return x, Val1, Val2, Val3
+
+
+
+# ********************************************************************
+# to read data generated by KIT and from SDP600 sensor
+# reads data from file given by input_file
+# returns:
+# x - set of times,
+# Val - set of values
+ 
+def ReadSplitFileSDP600(input_file):  
+	#, DateTimeFormat='%d.%m.%Y %H:%M:%S'
+	# '%d.%m.%Y %H:%M'  for WUFI
+	# '%d.%m.%Y %H:%M:%S' - default
+	
+	with open(input_file) as f:
+		data = f.read()    
+	data = data.split('\n')	
+	data.pop(0)  ## remove last element of list since it is just empty element
+	data.pop()  ## remove last element of list since it is just empty element
+	tlength = len(data)
+
+	for i in range(0,tlength):
+		data[i] = data[i].replace('"','')  # remove "
+		data[i] = data[i].replace('.','')  # remove .
+		data[i] = data[i].replace(',','.')  # replace ,  by .
+	
+	j=0
+	for rec in data:
+		#print(rec)
+		if len(rec)<1:
+			print("REMOVED "+str(j))
+			data.pop(j)		
+		j = j+1	
+		
+	tlength = len(data)
+
+	
+	#print("  tlg")
+	#print(tlength)
+	#print(data[1])
+	
+	#DateM = [row.split(' ')[0] for row in data]  # first column is just index
+	TimeM  =  [row.split(';')[1] for row in data]  # second column is time measured from start
+	
+#	x = []
+#	for i in range(tlength):
+#		try:
+#			dd = datetime.datetime.strptime(DateM[i] + ' ' + TimeM[i], DateTimeFormat)
+#		except:
+#			print(DateM[i])
+#			print(TimeM[i])
+#			print(i)
+#		
+#			
+#		x.append(dd)
+
+	Val = [row.split(';')[2] for row in data]
+	return TimeM, Val
+
+
+
+# ********************************************************************
+# reads data from file. Fileformat: 
+# Zeit_in_Sek dB_Wert 
+# input_file - Name von Datei zu lesen.
+# nvalues - Wie viele Variablen werden für jede Zeitpunkt gespeichert
+# returns:
+# x - set of times,
+# Val - set of values
+ 
+def ReadSplitFileAkuLap(input_file, StartTime, nvalues=1):  
+	
+	with open(input_file) as f:
+		data = f.read()    
+	data = data.split('\n')	
+	data.pop()  ## remove last element of list since it is just empty element
+
+	tlength = len(data)
+
+	for i in range(0,tlength):
+		data[i] = data[i].replace('	',' ')  # replace Tab by space
+	
+	j=0
+	for rec in data:
+		#print(rec)
+		if len(rec)<1:
+			print("REMOVED "+str(j))
+			data.pop(j)		
+		j = j+1	
+		
+	tlength = len(data)
+
+	
+	#print("  tlg")
+	print(tlength)
+	#print(data[1])
+	
+	timearray = [row.split(' ')[0].replace(',','.') for row in data]
+	
+	x = []
+	for i in range(tlength):
+		try:
+			#print(timearray[i])
+			dd = StartTime +  timedelta(hours=float(timearray[i]))
+			#print(dd)
+			x.append(dd)
+		except:
+			pass
+			#print(i)
+		
+	#print(x)
+	# data file contains values of  nvalues parameters:
+	# note that first two columns in file are date and time:
+	if (nvalues==1):
+		Valuesarray  =  [row.split(' ')[1].replace(',','.') for row in data]
+		return x, Valuesarray
+
+#	if (nvalues==2):
+#		Val1 = [row.split(' ')[2].replace(',','.') for row in data]
+#		Val2 = [row.split(' ')[3].replace(',','.') for row in data]
+#		return x, Val1, Val2
+#
+#	if (nvalues==3):
+#		Val1 = [row.split(' ')[2].replace(',','.') for row in data]
+#		Val2 = [row.split(' ')[3].replace(',','.') for row in data]
+#		Val3 = [row.split(' ')[3].replace(',','.') for row in data]
+#		return x, Val1, Val2, Val3
+
+
+# Function to read data from file of differerntial pressure tool TA465
+# date and time are separated by tab in contrast to conventional formats where
+# date and time are separated via space.
+
+def GetDataFromFileTA465Pressure(ifile):
+	with open(ifile) as f:
+		data = f.read()
+
+	data = data.replace(',','.') # 
+	data = data.split("\n")
+	data.pop() # remove last
+	
+	for i in range(0,30):
+		data.pop(0) # remove first			
+	
+	DateTimeM = [row.split('	')[0] + ' ' + row.split('	')[1] for row in data]
+	Pressure = [row.split('	')[2] for row in data]
+	
+	#print(DateTimeM)
+	t = []
+	for i in range(len(DateTimeM)):
+		dd = datetime.datetime.strptime(DateTimeM[i], '%d.%m.%Y %H:%M:%S') # 
+		t.append(dd)	
+	return t, Pressure
+	

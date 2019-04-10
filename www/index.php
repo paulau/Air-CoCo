@@ -24,7 +24,12 @@ if ($a->Authorised) {
 	
 	<table id='statetable' align=center border='1px solid black' cellPadding=0 cellSpacing=0 width=100%>
 	<tr bgcolor='#00EE00'>  <th>Datum, Uhrzeit</th> <th>Tin</th> <th>Tout</th> <th>Wind-Regen</th> <th>Luftung</th> </tr> 
-	<tr><td id='datetime'></td><td id='tin'></td><td  id='tout'></td><td id='WindRainState'></td><td id='FanState'></td></tr></table>
+	<tr><td id='datetime'></td><td id='tin'></td><td  id='tout'></td><td id='WindRainState' align='center'></td><td id='FanState' align='center'></td></tr></table>
+	
+	<br><br><br>
+	<center><img src='datapics/2019_03_09-2019_04_10.png'  width=600></center>
+	<br>
+
 	
 	<!--'WindowOpenMotorState':1,'WindowCloseMotorState':1 
 	<A onclick='refresh()'>Testlink</A> &nbsp -->

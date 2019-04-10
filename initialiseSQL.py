@@ -23,6 +23,8 @@
 #show databases;
 #drop user runner;
 #drop database AirCoCo;
+
+
 #CREATE DATABASE AirCoCo;
 #use AirCoCo 
 #CREATE TABLE Parameters(Id INT PRIMARY KEY AUTO_INCREMENT, ParameterName CHAR(255), ParameterValue CHAR(255));
@@ -37,15 +39,7 @@
 import imp  					# to read the variables from py files
 import MySQLdb
 import sys, os
-
-#the default username is 'root' and by default there is no password.
-class SQLPar():
-	def __init__(self):
-		self.Server = 'localhost'
-		self.User = 'root'
-		self.Passwd = ''
-		self.Database = 'AirCoCo'
-		self.Table = 'Parameters'
+from SQLParameters import *
 
 def exequte_sql_request(SQL, command):
 	con = MySQLdb.connect(SQL.Server,SQL.User,SQL.Passwd,SQL.Database)

@@ -22,7 +22,7 @@ TdifferenceOn = 3.0			# Kelvin. Schalten die Lüftung an, wenn Außentemperatur 
 TdifferenceOff = 1.0			# Kelvin. Schaltet diel Lüftung aus, wenn Außentemperatur - Innentemperatur < TdifferenceOff
 					# Default Wert ist 1 oder grosser, weil Prezision von Fühler ist +-0.5 
 
-Tmin = 14 #ab 27.05.2016		# °C Steuerung wird betätigt nur wenn Innen Temperatur ist grosser als Tmin
+Tmin = 14.0 #ab 27.05.2016		# °C Steuerung wird betätigt nur wenn Innen Temperatur ist grosser als Tmin
 
 MinOffTime = 5				# Minutes. Minimal Zeit zwischen Ende von Lüftung und Start von volgende Lüftung.  
 					# um häufige An- Aus-schaltungen zu vermeiden. 

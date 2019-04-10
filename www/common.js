@@ -32,9 +32,33 @@ function refresh() {
 			document.getElementById('datetime').innerHTML = stateObj.datetime;
 			document.getElementById('tin').innerHTML = stateObj.tin;
 			document.getElementById('tout').innerHTML = stateObj.tout;
-			document.getElementById('WindRainState').innerHTML = stateObj.WindRainState;
-			document.getElementById('FanState').innerHTML = stateObj.FanState;
+			if (stateObj.WindRainState==0) {
+				document.getElementById('WindRainState').innerHTML = "Gute Wetter";
+				document.getElementById("WindRainState").style.color = "#ff0000"; 
+				} 
+			if (stateObj.WindRainState==1) {
+				document.getElementById('WindRainState').innerHTML = "Schlechte Wetter";
+				document.getElementById("WindRainState").style.color = "#000000"; 
+				}
+				
+			if (stateObj.WindRainState==0) {
+				document.getElementById('FanState').innerHTML = "Aus";
+				document.getElementById("FanState").style.color = "#ff0000"; 
+				} 
+			if (stateObj.WindRainState==1) {
+				document.getElementById('FanState').innerHTML = "An";
+				document.getElementById("FanState").style.color = "#000000"; 
+				}
+			
+			 stateObj.FanState;
 			}
 		}
 	req.send();
+	}
+
+
+function ActivateImage(fname) {
+	var folder = "datapics/";
+	var res = folder.concat(fname);
+	document.images['exposed'].src = res;
 	}

@@ -14,6 +14,9 @@ Example of usage:
 
 sudo python /home/pi/Steuerung-Monitoring/monicontrol.py /home/pi/Steuerung-Monitoring/data/ 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &	
 
+User requested to change the output folder to the external USB memory:
+sudo python /home/pi/Steuerung-Monitoring/monicontrol.py /media/pi/INTENSO/ 1>  /media/pi/INTENSO/tmp_logger_out.txt 2> /media/pi/INTENSO/tmp_logger_err.txt &	
+
 
 The one, optional argument, here /home/pi/Steuerung-Monitoring/data/
 is the path to the folder to save the measurements data.

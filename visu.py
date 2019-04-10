@@ -9,12 +9,19 @@
 
 # usage: 
 # cd ... 
-# visu.py data/ kk002_2019_03_20_00_00.txt
+# python visu.py /home/pi/Steuerung-Monitoring/data/  kk002_2019_03_22_00_00.txt
 
 
 import sys, os, datetime
 from ReadSplitFile import ReadSplitFileN
 from datetime import timedelta
+
+
+#expath = os.path.split(os.path.abspath(os.path.realpath(sys.argv[0])))[0]
+#datapath = '/home/pi/Steuerung-Monitoring/data/'
+#fname = 'kk002_2019_03_22_00_00.txt'
+#excommand  = 'python ' + expath + '/visu.py' +  ' ' + datapath + ' ' + fname
+#print(excommand)
 
 import matplotlib as mpl
 window = False
@@ -54,13 +61,16 @@ VentillatorState = Values[3]
 #CleanControlData(tr, Tin, RHin, Tout, RHout, VentillatorState)
 
 
-myFmt = mdates.DateFormatter('%d.%m.%Y')   # '%d.%m.%Y %H:%M'  
 Now = datetime.datetime.today()
 		
 fig = plt.figure() #,  dpi=300 # "Temperatur Und Feuchtigkeit")
 
 d2 = tr[-1]
 d1 = tr[0]
+
+#delta = d2 - d1
+myFmt = mdates.DateFormatter('%d.%m.%Y %H:%M')   # '%d.%m.%Y %H:%M'  
+
 
 #d1 = datetime.datetime.strptime('26.06.2017 07:00', '%d.%m.%Y %H:%M') #  %H:%M
 #d2 = datetime.datetime.strptime('28.06.2017 07:00', '%d.%m.%Y %H:%M') #  %H:%M

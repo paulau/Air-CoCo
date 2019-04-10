@@ -5,7 +5,11 @@ Raspberry configuration:
 git clone https://github.com/paulau/Air-CoCo.git Steuerung-Monitoring
 
 2) Set the autorun:
+in shell:
+nano /etc/rc.local
+insert line like:
 sudo python /home/pi/Steuerung-Monitoring/monicontrol.py /home/pi/Steuerung-Monitoring/data/ 1>  /home/pi/tmp_out.txt 2> /home/pi/tmp_err.txt &
+note: the output into external USB Media is used see comment in monicontrol.py
 
 3) Install apache, MySQL, php.
 sudo apt-get install apache2
@@ -52,5 +56,12 @@ sudo -s
 rm prefix_*
 ls -s1
 
+-------------------
 
+less kk002_2019_03_27_*.txt >> abc.txt
+rm kk002_2019_03_27_*.txt
+mv  abc.txt kk002_2019_03_27_00_00.txt
+
+
+less kk002_2019_*.txt >> abc.txt
 
