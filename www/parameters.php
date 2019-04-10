@@ -3,7 +3,7 @@
 include('header.html');
 include ("daoparameters.php");
 include ("sqlsettings.php"); // import settings of sql database
-require ("auth.php"); // import settings of sql database
+require ("authclass.php"); // import authorisation class
 
 
 
