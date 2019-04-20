@@ -2,10 +2,26 @@
 
 function init() // This is the function the browser first runs when it's loaded.
 	{
+	refreshSlide();
+	var int = self.setInterval(function () {
+		refreshSlide()
+		}, 5000);   // Set the refresh() function to run every 1 seconds.	
+
 	refresh() // Then runs the refresh function for the first time.
 	var int = self.setInterval(function () {
 		refresh()
 		}, 1000);   // Set the refresh() function to run every 1 seconds.   
+	}
+
+function refreshSlide() {
+	var slidetop = document.getElementById('slidetopid');
+	if (slidetop.style.opacity==1.0)
+		{
+		//alert("hallo");	
+		slidetop.style.opacity=0.0;
+		} else {
+		slidetop.style.opacity=1.0;
+		}
 	}
 
 

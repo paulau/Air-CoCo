@@ -39,6 +39,7 @@ from datetime import date, timedelta
 from monicontrolclass import *  			# monicontrol logger-controller class
 import signal 							# to process kill signal and exit correctly
 import time, datetime, sys, os 			# import system and date time functions
+import traceback
 
 moniCont = MoniControl("settingsMC.py") # the object of the class MoniControl is initialized
 
@@ -77,6 +78,13 @@ while True:
 		if (waittime>0):
 			time.sleep(waittime) # sleep watitime 
 	except:
+		# oops! Exceptions happen!
+		# It is good to clean_up, close windows, switch of ventilator and stop control in case of exceptions.
+		# but it is good to know, what is the exception and make so, that it does not appear or processed!
+		# message to administrator could be nice!!!
+		var = traceback.format_exc()
+		print (var)
+		print("Oops!",sys.exc_info()[0],"occured.")
 		moniCont.clean_and_exit()
 		# OTHER WAY OF EXCEPTION HANDLING IS NOT GOOD: AFTER ANY EXCEPTION 
 		# ONE NEEDS TO SWITCH OFF

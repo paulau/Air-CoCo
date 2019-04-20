@@ -82,17 +82,16 @@ class MoniControl(threading.Thread):
 		# initialise all parameters from the settings class.
 		settingsfullfname = self.script_path + "/" + settingsfname
 		self.P = imp.load_source('settings', settingsfullfname) # read Parameters
-		print ("	Parameters Initialisation from file:" + settingsfullfname + " complite")
+		print("	Parameters Initialisation from file:" + settingsfullfname + " complite")
 		
 		#  ****** THE OBJECT self.P CONTAINS NOW ALL PARAMETRS *********
 		#  **************** OF THE settings*.py file *******************
 		#  *************************************************************
 
 	def ini_parameters_mysql(self):
-		print("parametrs will now be initialised")
+		print("parametrs from sql will now be initialised")
 		self.P = ParametersFromSQL()
-		print("parametrs are initialised")
-		#print ('P.pin1 =' + P.pin1) 
+		print("parametrs from sql are initialised")
 		#  ****** THE OBJECT self.P CONTAINS NOW ALL PARAMETRS *********
 
 
@@ -272,9 +271,8 @@ class MoniControl(threading.Thread):
 		self.OString = self.MeasurementTime.strftime("%d.%m.%Y %H:%M:%S")		
 		# error can appear actually here during transformation from "None" to real value :
 		self.OString= self.OString  + "	" +  "{:.2f}".format(self.t_inside) + "	" + "{:.2f}".format(self.t_outside) + "	" +  "{:.0f}".format(self.windRainState) + "	" + str(self.StateOfVentillator) + "\n"  # comment last summand if used with print	
-		sys.stdout.write(self.OString) 
+		#sys.stdout.write(self.OString) 
 		self.f.write(self.OString) # output to file
-		#f.flush()  #could be "reason" of demage of MicroSDs.  Comment it. No need to see current value in file immediately
 
 	def control_ventilation(self):
 		# since reading of data using long cable can cause errors sometimes, 
@@ -354,12 +352,10 @@ class MoniControl(threading.Thread):
 		
 		# visualise data for each finished file:
 		excommand  = 'python ' + self.script_path + '/visu.py' +  ' ' + self.opath + ' ' + self.fname
-		print(excommand)
 		os.system(excommand)
 		
 		# move visualisation files to web folder:
 		excommand = 'mv ' + self.opath + '*.png ' + self.webfolder
-		print(excommand)
 		os.system(excommand)
 		
 		self.fname  = self.P.fileprefix + self.MeasurementTime.strftime("%Y_%m_%d_%H_%M") + ".txt" # _%M
@@ -390,27 +386,27 @@ class MoniControl(threading.Thread):
 		self.PORT = 40012 		# 8888 Arbitrary non-privileged port
 		self.backlog = 10		# max number of connections. only one. check 0
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		print 'Socket created'
+		print('Socket created')
 		#Bind socket to local host and port
 		try:
 			self.s.bind((self.HOST, self.PORT))
 		except socket.error as msg:
-			print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+			print('Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
 			sys.exit()
-		print 'Socket bind complete'
+		print('Socket bind complete')
 		#Start listening on socket
 		self.s.listen(self.backlog)
-		print 'Socket now listening'
+		print('Socket now listening')
 		self.cond = 1
 		
 		self.server_responce_message = "Hallo I am your server"
 		
 		self.start()
 		
-		print ("	Server initialisation")
+		print("	Server initialisation")
 		
 	def run(self):
-		print "Starting " + self.name
+		print("Starting " + self.name)
 		#now keep talking with the client
 		while self.cond:
 			#wait to accept a connection - blocking call
@@ -426,10 +422,28 @@ class MoniControl(threading.Thread):
 						self.set_server_responce_message()
 						conn.send(self.server_responce_message)
 					except ValueError:
-						print "Not a float"
+						print("Not a float")
 						
-				#if buf=='Stop': 
-				#	self.s.close()
+				if buf=='Flush': 
+					# This command will be sent to this ventillation server
+					# to visualise the current measurements data 
+					# The required operation here is just 
+					# flush of the buffer into the current ouptput file:
+					self.f.flush()
+					# dangerous! Work with the same variable from different processes!
+					# possible debug is needed!
+
+					# visualise data into current visualisation file
+					excommand  = 'python ' + self.script_path + '/visu.py' +  ' ' + self.opath + ' ' + self.fname
+					os.system(excommand)
+		
+					# move visualisation files to web folder and give new name current.png:
+					pngname = self.fname.replace('.txt', '.png')
+					excommand = 'mv ' + self.opath + pngname + ' ' + self.webfolder + 'current.png'
+					
+					
+					os.system(excommand)
+
 				
 				if buf=='Reboot': 
 					excommand = 'sudo reboot'
@@ -437,7 +451,7 @@ class MoniControl(threading.Thread):
 
 			conn.close()
 			
-		print "Exiting " + self.name 
+		print("Exiting " + self.name)
 		
 	def clean(self):
 		self.cond = 0 # set condition to stop thread loop

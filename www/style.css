@@ -154,3 +154,56 @@ A:hover
 #tred { border:2px #fff solid; }  
 #tdred { border:0px #fff solid;  }
 
+/* Style the footer */
+.footer {
+	FONT-FAMILY: Calibri; 
+    FONT-SIZE: 11px; fontsize: 11px;
+	background-color: #657c9e;  
+	text-align: center;
+	color: black;
+	width:99%;  
+}
+
+
+/* Style the header */
+.header {
+  background-color: #f1f1f1;
+  text-align: left;
+  font-size: 35px;  
+  width: 98%;
+}
+
+
+#slidebottomid {
+  position:absolute;
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+  width:98%;
+  
+}
+
+#slidetopid {
+  position:absolute;  
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+  width:98%;
+}
+
+.header #slidehiddenid {  
+  opacity: 0.0;
+  width:98%;
+  
+}
+
+#toplogo
+{
+  position:absolute;  
+  z-index:100;
+  color:#0000FF;
+  FONT-SIZE: 30px; 
+  FONT-WEIGHT: bold;     
+}
