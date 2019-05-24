@@ -34,6 +34,7 @@ import glob
 import socket, threading
 from settingsFromSQL import *
 
+
 class MoniControl(threading.Thread):
 	# constructor. Initialise things  (allocate memory)
 	# has one argument, the name of the settings file.
@@ -52,14 +53,16 @@ class MoniControl(threading.Thread):
 		self.script_path = os.path.dirname(os.path.abspath(__file__))
 		self.webfolder = '/var/www/html/air-coco/datapics/'
 		
-		time.sleep(60) # wait nearly 1 min till mysql server is started
-		try: # try to get parameters from database. 
-			self.ini_parameters_mysql()
-		except: # and get from file if database makes problems
-			self.ini_parameters(settingsfname)
+		#time.sleep(60) 
+		#wait nearly 1 min till mysql server is started
+		#try: # try to get parameters from database. 
+		#	self.ini_parameters_mysql()
+		#except: # and get from file if database makes problems
+		self.ini_parameters(settingsfname)
 		
 		#self.ini_parameters(settingsfname)
 		
+		self.check_wind_rain()
 		self.initialise_temperature_sensors()
 		self.initialise_ventilation_devices()
 		self.initialise_control_variables()
@@ -71,6 +74,8 @@ class MoniControl(threading.Thread):
 		self.save_data() # to initialise ostring
 		
 		self.initialise_server_thread()
+		
+		self.auto = 1
 		
 		print("	Constructor Done")
 
@@ -99,7 +104,9 @@ class MoniControl(threading.Thread):
 		#  *****************   Sensors Initialisation ******************
 		# ids are specified in the configuration files 
 		# attention. the ini_parameters must be called befor the call 
-		# of this function
+		# of this function 
+		# Use of DS18B20 temperature sensors
+		
 		self.sensor_inside_id = self.P.sensor_inside_id     
 		self.sensor_outside_id = self.P.sensor_outside_id   
  
@@ -112,8 +119,15 @@ class MoniControl(threading.Thread):
 		device_folder_sensor_inside = base_dir + self.sensor_inside_id 
 		self.device_file_sensor_inside = device_folder_sensor_inside + '/w1_slave'
 
-		device_folder_sensor_outside = base_dir + self.sensor_outside_id
-		self.device_file_sensor_outside = device_folder_sensor_outside + '/w1_slave'
+		if (len(self.sensor_outside_id)>4):
+			self.outside_sensor_type = '1-wire'
+			device_folder_sensor_outside = base_dir + self.sensor_outside_id
+			self.device_file_sensor_outside = device_folder_sensor_outside + '/w1_slave'
+		else:
+			self.outside_sensor_type = 'i2c'
+			import smbus
+			self.bus = smbus.SMBus(1)
+			
 
 		print("	Sensors Initialisation complete")
 		#  *************************************************************
@@ -132,33 +146,41 @@ class MoniControl(threading.Thread):
 		
 		# Set the following GPIO pins as output pins:
 		GPIO.setup(self.P.RelayK1ControlPin, GPIO.OUT, pull_up_down=GPIO.PUD_OFF)
-		GPIO.setup(self.P.RelayK2ControlPin, GPIO.OUT, pull_up_down=GPIO.PUD_OFF)
-		GPIO.setup(self.P.RelayK3ControlPin, GPIO.OUT, pull_up_down=GPIO.PUD_OFF)
+		
+		if (self.windrain):
+			GPIO.setup(self.P.RelayK2ControlPin, GPIO.OUT, pull_up_down=GPIO.PUD_OFF)
+			GPIO.setup(self.P.RelayK3ControlPin, GPIO.OUT, pull_up_down=GPIO.PUD_OFF)
 
 		# default state: ventillation off.
 		GPIO.output(self.P.RelayK1ControlPin, self.RelaySwitchOff) # switch off ventillator		
 		self.StateOfVentillator = 0 # 1 - on, 0 - off 
-		# close phisical windows:
-		self.close_windows() 
-		# (i.e. no opening no closing phase is active after this operation)
+		
+		if (self.windrain):
+			# close phisical windows:
+			self.close_windows() 
+			# (i.e. no opening no closing phase is active after this operation)
 
 		print("	GPIO for controlling Relay initialisation complete")
 		# **************************************************************
 
+	def check_wind_rain(self):
+		self.windrain = (hasattr(self.P, 'pin1') & hasattr(self.P, 'pin2') & hasattr(self.P, 'RelayK2ControlPin') & hasattr(self.P, 'RelayK3ControlPin') )
+
 	def initialise_wind_rain_monitoring(self):
 		
-		# ***************** Wind rain initialisation *******************
-		# State read settings: 
-		# The pin1 will be set as output pin and the state is set to 1 
-		# The pin1 is connected via relay to pin2.
-		# The relay is controlled via 220V of wind rain "phase"
-		# The state of the pin2 is accordingly the state of wind rain automatic
-		
-		GPIO.setup(self.P.pin1, GPIO.OUT)
-		GPIO.output(self.P.pin1, GPIO.HIGH) # 
-		GPIO.setup(self.P.pin2, GPIO.IN, pull_up_down=GPIO.PUD_OFF) # Lesemodus
-		print("	Wind Automation monitoring pins initialisation complete")
-		# **************************************************************
+		if (self.windrain):
+			# ***************** Wind rain initialisation *******************
+			# State read settings: 
+			# The pin1 will be set as output pin and the state is set to 1 
+			# The pin1 is connected via relay to pin2.
+			# The relay is controlled via 220V of wind rain "phase"
+			# The state of the pin2 is accordingly the state of wind rain automatic
+			GPIO.setup(self.P.pin1, GPIO.OUT)
+			GPIO.output(self.P.pin1, GPIO.HIGH) # 
+			GPIO.setup(self.P.pin2, GPIO.IN, pull_up_down=GPIO.PUD_OFF) # Lesemodus
+			print("	Wind Automation monitoring pins initialisation complete")
+			
+
 
 	def initialise_control_variables(self):
 		# ****************  Control variables:  ************************
@@ -206,11 +228,26 @@ class MoniControl(threading.Thread):
 	
 	# get values of temperatures inside and outside from sensors, 
 	# the state of windrain automation, the time of measurements. 
+
 	def get_data(self):
+		# get temperatures:
+		if (self.outside_sensor_type == 'i2c'):
+			self.get_data_1wire_i2c()
+		else:
+			self.get_data_1wire()
+			
+		# get the state of wind rain automation. 
+		if (self.windrain):
+			self.windRainState = GPIO.input(self.P.pin2)	#GPIO.wait_for_edge(SCL, GPIO.RISING) # RISING BOTH	
+		else: 
+			self.windRainState = 0
+
+		# get time:
+		self.MeasurementTime = datetime.datetime.today() # time now
+
+	def get_data_1wire(self):
 		#reads the sensors data
-
 		lines1, lines2 = self.read_temp_raw() # Read the temperatures from 'device files'
-
 		# Convert the value of the sensor into a temperature 
 		# While the first line does not contain 'YES', wait for 0.2s
 		# and then read the device file again.
@@ -232,22 +269,46 @@ class MoniControl(threading.Thread):
 			self.t_outside = float(temp_string2) / 1000.0
 			# temp_f = temp_c * 9.0 / 5.0 + 32.0
 
-		# get the state of wind rain automation. 
-		self.windRainState  = GPIO.input(self.P.pin2)	#GPIO.wait_for_edge(SCL, GPIO.RISING) # RISING BOTH	
-			
-		self.MeasurementTime = datetime.datetime.today() # time now
+		
+	def get_data_1wire_i2c(self):
+
+		# Sensor inside:
+		f_inside = open(self.device_file_sensor_inside, 'r') # opens the temperature device file sensor inside				
+		lines1 = f_inside.readlines() # Returns the text
+		f_inside.close()
+
+		while (lines1[0].strip()[-3:] != 'YES'):
+			time.sleep(0.2)
+			f_inside = open(self.device_file_sensor_inside, 'r') # opens the temperature device file sensor inside				
+			lines1 = f_inside.readlines() # Returns the text
+			f_inside.close()
+		
+		equals_pos1 = lines1[1].find('t=')
+		if (equals_pos1 != -1):
+			temp_string1 = lines1[1][equals_pos1+2:]
+			self.t_inside = float(temp_string1) / 1000.0
+		
+
+		# Sensor outside:
+		self.bus.write_i2c_block_data(int(self.sensor_outside_id,16), 0x2C, [0x06])
+		time.sleep(0.5)
+		# Temp MSB, Temp LSB, Temp CRC, Luftfeuchte MSB, Luftfeuchte LSB, Luftfeuchte CRC
+		data = self.bus.read_i2c_block_data(int(self.sensor_outside_id,16), 0x00, 6)
+		# Temperatur in Celsius
+		temp = data[0] * 256 + data[1]
+		self.t_outside = -45 + (175 * temp / 65535.0) 
+		# relative Luftfeuchte in %
+		self.relativehumidity_outside = 100 * (data[3] * 256 + data[4]) / 65535.0
 
 
 	def clean_and_exit(self):
 		self.f.close()
 		GPIO.output(self.P.RelayK1ControlPin, self.RelaySwitchOff) # switch off voltage from ventillator
-		self.close_windows() 
-		GPIO.output(self.P.RelayK2ControlPin, self.RelaySwitchOff) # switch to manual control		
-		GPIO.output(self.P.RelayK3ControlPin, self.RelaySwitchOff) # 
-		# self.free_server()
-		GPIO.cleanup()	
+		if (self.windrain):
+			self.close_windows()
+		GPIO.cleanup()
 		sys.stdout.flush()
-		self.clean() # clean server part
+		self.clean() # clean server part  # self.free_server()
 		self.cleaned = 1
 		sys.exit(0)
 
@@ -270,79 +331,97 @@ class MoniControl(threading.Thread):
 		# Form string with date time, the values of temperatures inside, outside, the state of wind rain automation and the state of ventilator:
 		self.OString = self.MeasurementTime.strftime("%d.%m.%Y %H:%M:%S")		
 		# error can appear actually here during transformation from "None" to real value :
-		self.OString= self.OString  + "	" +  "{:.2f}".format(self.t_inside) + "	" + "{:.2f}".format(self.t_outside) + "	" +  "{:.0f}".format(self.windRainState) + "	" + str(self.StateOfVentillator) + "\n"  # comment last summand if used with print	
-		#sys.stdout.write(self.OString) 
+		self.OString = self.OString + "	" + "{:.2f}".format(self.t_inside) 
+		self.OString = self.OString + "	" + "{:.2f}".format(self.t_outside) 
+		self.OString = self.OString + "	" + "{:.0f}".format(self.windRainState) 
+		self.OString = self.OString + "	" + str(self.StateOfVentillator) 
+		if hasattr(self, 'relativehumidity_outside'):
+			self.OString = self.OString + "	" + "{:.2f}".format(self.relativehumidity_outside)
+		self.OString = self.OString + "\n"  # comment last summand if used with print	
+		sys.stdout.write(self.OString) 
 		self.f.write(self.OString) # output to file
 
 	def control_ventilation(self):
-		# since reading of data using long cable can cause errors sometimes, 
-		# one needs to ignore this errors
-		# To do it we will require, that condition is fulfilled at least several times
-		# counted by counters joffok and jonok, they are set to zeroes in 
-		# constructor initially
-		
-		# because of insekts, we set in settings file normally 
-		# the ventilation between StartTime and EndTime every day
-		
-		# "hour" of the time of measurements:
-		
-		tm = int(self.MeasurementTime.strftime("%H")) #%H %M  
-		
-		# The following conditions must be satisfied, to open windows 
-		# and start ventilation:
-		
-		mainOnCondition = (self.t_inside - self.t_outside) > self.P.TdifferenceOn 
-		# the difference of temperatures outside and inside reached the desired value. 
-		# to start ventilation only, if it makes sence. 
-		
-		tMinCondition = self.t_inside > self.P.Tmin
-		# The temperature inside is higher, than some reasonable for people Tmin value
-		
-		timeCondition = ((tm>=self.P.StartTime)&(tm<=self.P.EndTime))
-		# the ventilation only in certain time interval nights, to prevent insects problem
-		
-		#  Check of the Wind Rain must be added.
-		windRainCondition = self.windRainState
-
-		# check, that the last switch off was not too short time ago:
-		Now = datetime.datetime.today()
-		minOffTimeCondition = (Now-self.lastSwitchOffTime)>self.MinOffTimeDateTime
-		
-		# add to switchon counter, if all conditions are satisfied:
-		if ( mainOnCondition & timeCondition & tMinCondition & minOffTimeCondition):
-			self.jonok = self.jonok + 1
-			self.joffok = 0  # start to count again
-		
-		# The following conditions must be satisfied, to switch off 
-		# ventilation:
-		
-		mainOffCondition = (self.t_inside - self.t_outside)<self.P.TdifferenceOff		
-		# the difference of temperatures is less than TdifferenceOff
-
-		# add to switchoff counter, if all conditions are satisfied:
-		if (mainOffCondition | (not tMinCondition) | (not timeCondition)): 
-			self.joffok = self.joffok + 1
-			self.jonok = 0  # start to count again
-		
-		if ((self.jonok>5)&(windRainCondition)):  # 5 measuraments, condition to switch on is satisfied. 						
-							# then 'switch on' ventilation
-			if (self.StateOfVentillator==0):
-				self.open_windows()
-				GPIO.output(self.P.RelayK1ControlPin, self.RelaySwitchOn) # switch on ventillation
-				self.StateOfVentillator = 1
-			jonok = 0 
-		
-		
-		# switch off of ventilator must be done immidiately as soon as 
-		# wind or rain was detected!
-		if ((self.joffok>5)|(not windRainCondition)): # 5 measuraments, condition to switch off is satisfied. 
-			if (self.StateOfVentillator==1): # i.e. now is switch off event
-											 # switch off make sense only if ventillator was on
-				GPIO.output(self.P.RelayK1ControlPin, self.RelaySwitchOff) # switch off voltage of ventillator(s)
-				self.close_windows()
-				self.lastSwitchOffTime = datetime.datetime.today()
-				self.StateOfVentillator = 0
-			self.joffok = 0 
+		if (self.auto==1):
+			# since reading of data using long cable can cause errors sometimes, 
+			# one needs to ignore this errors
+			# To do it we will require, that condition is fulfilled at least several times
+			# counted by counters joffok and jonok, they are set to zeroes in 
+			# constructor initially
+			
+			# because of insekts, we set in settings file normally 
+			# the ventilation between StartTime and EndTime every day
+			
+			# "hour" of the time of measurements:
+			
+			tm = int(self.MeasurementTime.strftime("%H")) #%H %M  
+			
+			# The following conditions must be satisfied, to open windows 
+			# and start ventilation:
+			
+			mainOnCondition = (self.t_inside - self.t_outside) > self.P.TdifferenceOn 
+			# the difference of temperatures outside and inside reached the desired value. 
+			# to start ventilation only, if it makes sence. 
+			
+			tMinCondition = self.t_inside > self.P.Tmin
+			# The temperature inside is higher, than some reasonable for people Tmin value
+			
+			timeCondition = ((tm>=self.P.StartTime)&(tm<=self.P.EndTime))
+			# the ventilation only in certain time interval nights, to prevent insects problem
+			
+			#  Check of the Wind Rain must be added.
+			if (self.windrain):
+				windRainCondition = self.windRainState
+			else: 
+				windRainCondition = True
+	
+			# check, that the last switch off was not too short time ago:
+			Now = datetime.datetime.today()
+			minOffTimeCondition = (Now-self.lastSwitchOffTime)>self.MinOffTimeDateTime
+			
+			if hasattr(self, 'relativehumidity_outside'):
+				humCondition = (self.relativehumidity_outside < self.P.MaxHumidity)
+			else: 
+				humCondition = True
+			
+			# add to switchon counter, if all conditions are satisfied:
+			if ( mainOnCondition & timeCondition & tMinCondition & minOffTimeCondition & humCondition):
+				self.jonok = self.jonok + 1
+				self.joffok = 0  # start to count again
+			
+			# The following conditions must be satisfied, to switch off 
+			# ventilation:
+			
+			mainOffCondition = (self.t_inside - self.t_outside)<self.P.TdifferenceOff		
+			# the difference of temperatures is less than TdifferenceOff
+			
+				
+			# add to switchoff counter, if all conditions are satisfied:
+			if (mainOffCondition | (not tMinCondition) | (not timeCondition) | (not humCondition)):
+				self.joffok = self.joffok + 1
+				self.jonok = 0  # start to count again
+			
+			if ((self.jonok>5)&(windRainCondition)):  # 5 measuraments, condition to switch on is satisfied. 						
+								# then 'switch on' ventilation
+				if (self.StateOfVentillator==0):
+					if (self.windrain):
+						self.open_windows()
+					GPIO.output(self.P.RelayK1ControlPin, self.RelaySwitchOn) # switch on ventillation
+					self.StateOfVentillator = 1
+				jonok = 0 
+			
+			
+			# switch off of ventilator must be done immidiately as soon as 
+			# wind or rain was detected!
+			if ((self.joffok>5)|(not windRainCondition)): # 5 measuraments, condition to switch off is satisfied. 
+				if (self.StateOfVentillator==1): # i.e. now is switch off event
+												# switch off make sense only if ventillator was on
+					GPIO.output(self.P.RelayK1ControlPin, self.RelaySwitchOff) # switch off voltage of ventillator(s)
+					if (self.windrain):
+						self.close_windows()
+					self.lastSwitchOffTime = datetime.datetime.today()
+					self.StateOfVentillator = 0
+				self.joffok = 0 
 		
 
 	# to prevent the loss of data, the data are writen into new file
@@ -481,3 +560,17 @@ class MoniControl(threading.Thread):
 		self.server_responce_message = jsonstr
 		#"WindowOpenMotorState":1,
 		#"WindowCloseMotorState":1
+
+
+	def send_notification(self, emsg):
+		if hasattr(self.P, 'emailsto'):
+			from sndemail import *
+			import socket
+			esbj = 'Mitteilung von: ' + socket.gethostname()
+			
+			for emailto in self.P.emailsto:
+				sndemail(emailto, self.P.emailfrom, self.P.mailserver, self.P.passwmail, esbj, emsg)
+
+
+
+

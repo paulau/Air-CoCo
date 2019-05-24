@@ -57,11 +57,11 @@ function refresh() {
 				document.getElementById("WindRainState").style.color = "#000000"; 
 				}
 				
-			if (stateObj.WindRainState==0) {
+			if (stateObj.FanState==0) {
 				document.getElementById('FanState').innerHTML = "Aus";
 				document.getElementById("FanState").style.color = "#ff0000"; 
 				} 
-			if (stateObj.WindRainState==1) {
+			if (stateObj.FanState==1) {
 				document.getElementById('FanState').innerHTML = "An";
 				document.getElementById("FanState").style.color = "#000000"; 
 				}

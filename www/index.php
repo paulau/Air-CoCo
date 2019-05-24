@@ -27,7 +27,18 @@ if ($a->Authorised) {
 	<tr><td id='datetime'></td><td id='tin'></td><td  id='tout'></td><td id='WindRainState' align='center'></td><td id='FanState' align='center'></td></tr></table>
 	
 	<br><br><br>
-	<center><img src='datapics/2019_03_09-2019_04_10.png'  width=600></center>
+	
+	Die volgende Knopfe sind noch nicht funktionstüchtig. 
+	Die sind da als Vorschlag zu implementieren. <br>
+	<form>
+	<table>
+		<tr><td>Fenster (Auf-Zu): </td> <td> <button type='button' id='Fenster'>Auf-Zu</button> </td> </tr>
+		<tr><td>Regime (Auto-Manuell): </td> <td> <button type='button' id='AutoManuell' width=200px>Automatic-Manuell</button>   </td> </tr>
+		<tr><td>Lufter: </td> <td> <button type='button' id='Luftung'>An-Aus</button>  </td> </tr>
+	</table>
+	</form>
+	
+	<center><img src='datapics/2019_03_09-2019_04_10.png'></center>
 	<br>
 
 	

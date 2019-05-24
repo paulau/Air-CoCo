@@ -29,10 +29,6 @@ here  to /home/pi/tmp_logger_err.txt
 Note: the file with the settings must be stored in the same folder 
 as this main python script (monicontrol.py).
 
-
-
-
-
 """
 
 from datetime import date, timedelta
@@ -79,13 +75,29 @@ while True:
 			time.sleep(waittime) # sleep watitime 
 	except:
 		# oops! Exceptions happen!
-		# It is good to clean_up, close windows, switch of ventilator and stop control in case of exceptions.
-		# but it is good to know, what is the exception and make so, that it does not appear or processed!
-		# message to administrator could be nice!!!
+		
+		#  * switch off ventilator 
+		#  * close windows
+		#  * stop control
+		#  * infor about exception is written to the stdout
+		#  * email message to administrator is sent
+		
+		GPIO.output(self.P.RelayK1ControlPin, self.RelaySwitchOff) # switch off voltage from ventillator
+		self.close_windows()
+		self.StateOfVentillator = 0 # just information bit, which shows the state of ventillation. 
+									# must be always set at change of ventilation
+
+		self.auto = 0
+
 		var = traceback.format_exc()
 		print (var)
 		print("Oops!",sys.exc_info()[0],"occured.")
-		moniCont.clean_and_exit()
+		sys.stdout.flush()			# make output to file
+		
+		emsg = var + " exception " + sys.exc_info()[0]
+		moniCont.send_notification(emsg)
+
+
 		# OTHER WAY OF EXCEPTION HANDLING IS NOT GOOD: AFTER ANY EXCEPTION 
 		# ONE NEEDS TO SWITCH OFF
 		# OTHERWISE POWERFUL VENTILLATORS WILL CAN DO WRONG JOB
