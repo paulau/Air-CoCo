@@ -132,6 +132,103 @@ class Parameters {
 		}
 	
 	
+	// the same as GetParameterForm, but for MoniControlC device 
+	function GetParameterFormMoniControlC()
+		{
+		$sql = "select * from AirCoCo.Parameters order by Id desc limit 50";
+		$result = mysqli_query($this->db, $sql) or die(mysqli_error());
+	
+		echo '
+			<!-- enctype="multipart/form-data" -->
+			<form 
+				name= "formorder"
+				action="parameters.php"
+				method="post"
+				onsubmit="return(validate());"
+				>	
+			<table>';
+	
+		// Save "result into php array":
+		$this->table = array();	
+		while($row = mysqli_fetch_array($result)) {
+			$PName = $row['ParameterName'];
+			$PValue = $row['ParameterValue'];
+			$this->table[$PName] = $PValue;
+			}
+	
+		$this->printSectionName("Parameters of Sensors and relays:");
+		
+		$this->printParameterLine("CO2_ADDR");
+		$this->printParameterLine("DHTDataPin");
+		$this->printParameterLine("GPIOVoltagePin");
+		$this->printParameterLine("RelayK1ControlPin");
+		$this->printParameterLine("VentControlPin");
+			
+			
+		$this->printSectionName("Parameters of control:");
+		
+		$this->printParameterLine("MinOffTime");
+		$this->printParameterLine("CO2Limit");
+		$this->printParameterLine("CO2LimitOff");
+
+		$this->printSectionName("Logging parameters:");
+		
+		$this->printParameterLine("SaveInterval");
+		$this->printParameterLine("LoggingInterval");
+		$this->printParameterLine("fileprefix");
+		$this->printParameterLine("outputfolder");
+		
+
+		$this->printSectionName("Parameters of central server:");
+		
+		$this->printParameterLine("ftpserveraddr");
+		$this->printParameterLine("FTPfolder");
+		$this->printParameterLine("ftpbenutzer");
+		$this->printParameterLine("ftppasswort");
+		$this->printParameterLine("UploadRate");
+		
+
+		$this->printSectionName("SQL Parameters:");
+		
+		$this->printParameterLine("SQLuser");
+		$this->printParameterLine("SQLpw");
+		$this->printParameterLine("tabelle");
+		$this->printParameterLine("SQLserver");
+		$this->printParameterLine("FAST");
+		
+		
+		$this->printSectionName("Email Parameters:");
+		
+		$this->printParameterLine("emailfrom");
+		$this->printParameterLine("mailserver");
+
+		$this->printSectionName("settings for visualisation:");
+		
+		$this->printParameterLine("window");
+		$this->printParameterLine("outfile");
+		$this->printParameterLine("VisualisationInterval");
+		$this->printParameterLine("y1min");
+		$this->printParameterLine("y1max");
+		$this->printParameterLine("dpivalue");
+		$this->printParameterLine("tex");
+		$this->printParameterLine("ymax");
+
+		
+		$this->printSectionName("Other Parameters:");
+		
+		$this->printParameterLine("internettype");
+		$this->printParameterLine("description");
+		
+		echo '
+			</table>    
+			<b>Attention! The system will be reboot after pressing the button!</b><br>
+			<b>The pages of the control system will be up to 3 min unavailable!</b><br>
+			<input type="submit" value="Set Parameter!" id= formbutton>
+			</form>';
+		}
+		
+			
+	
 	function printParameterLine($name)
 	// first argument $name - parametername to be printed
 	// second argument - result of sql request - "table of all parameters"

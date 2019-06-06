@@ -1,6 +1,6 @@
 <?php
 
-class ventstate {
+class ventserver {
 	var $service_port, $address, $socket, $result;
 	
 	
@@ -33,6 +33,28 @@ class ventstate {
 		$out = socket_read($this->socket, 256);
 		echo $out;
 		}
+
+	function SendCommand($cmnd) // switch to automatic regime
+		{		
+		socket_write($this->socket, $cmnd, strlen($cmnd));
+		}
+
+	// each device has different sets of parameters and state variables.
+	// it should be described in different pages of WEB GUI. 
+	// To decide, which interface should be chosen, the 
+	// monicontrol class of each model should return its own name,
+	// via GetDeviceName function via according server request
+	function GetDeviceName() // switch to automatic regime
+		{		
+		$in = "GetDeviceName";
+		$out = '';
+		//echo "HTTP HEAD request senden ...<br>";
+		socket_write($this->socket, $in, strlen($in));
+		//echo "Serverantwort lesen:\n\n<br>";
+		$out = socket_read($this->socket, 256);
+		return $out;
+		}
+
 
 	}
 ?>

@@ -50,4 +50,19 @@ ftpserveraddr  = "xxx.xx.xx.xx"	#  IP oder URL von ftp server für Datenerfassun
 ftpbenutzer="kornkraft" 		# Benutzername
 ftppasswort="xxx" 			# password
 UploadRate=3600 			# Sekunden Daten werden jede UploadRate Sekunden hochgeladen.
+# uploadstable = "uploads"   table in sql database to save filenames to be ftp uploaded and to remove filenames if uploaded
 
+
+webfolder = '/var/www/html/air-coco/datapics/'  # to move the visualised data to the web folder
+outputfolder = '/home/pi/Steuerung-Monitoring/data/'
+#path to the folder to save the measurements data.
+#The data will be saved in the current folder, if the
+#argument is not specified. 
+#User requested to change the output folder to the external USB memory:
+#'/media/pi/INTENSO/'  
+
+
+emailsto = ["muster01@gmail.com", "muster02@web.de"] 
+emailfrom = 'from@server.de'
+mailserver = 'mail.server.de'
+passwmail = 'xxx'

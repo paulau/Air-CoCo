@@ -11,7 +11,9 @@ OpeningTime = 60			# Sekunde. Zeit um Fenster zu offnen
 # The values of the sensors ids are specific for each sensor. 
 # See 1-wire or i2c documentation, how to get them 
 
-sensor_inside_id =  '28-020a92454cb5'	
+sensor_inside_id =  '28-0417a3040eff' #  
+					# '28-020a92454cb5'
+
 sensor_outside_id = '0x44' # use 0x prefix at i2c address of a sensor
 # if the sensor contains only  4 characters, then it is i2c sensor otherwise 1-wire
 
@@ -53,3 +55,10 @@ emailfrom = 'from@server.de'
 mailserver = 'mail.server.de'
 passwmail = 'xxx'
 
+webfolder = '/var/www/html/air-coco/datapics/'  # to move the visualised data to the web folder
+outputfolder = '/home/pi/Steuerung-Monitoring/data/'
+#path to the folder to save the measurements data.
+#The data will be saved in the current folder, if the
+#argument is not specified. 
+#User requested to change the output folder to the external USB memory:
+#'/media/pi/INTENSO/'  

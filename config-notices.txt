@@ -38,7 +38,7 @@ configure settingsXX.py
 
 11) switch on 1-wire bus to use DS18B20 temperature sensors
 
-12) switch i2c bus on
+12) switch on i2c bus to use SHT 31-D Temperature humidity sensor or CO2 K-30 sensor: 
 https://www.abelectronics.co.uk/kb/article/1/i2c--smbus-and-raspbian-linux
 raspi-config ...
 sudo apt-get install python-smbus python3-smbus python-dev python3-dev i2c-tools

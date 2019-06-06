@@ -14,7 +14,7 @@ import sys
 
 PORT = 40012
 HOST = 'localhost'
-message = 'GetData'
+message = 'GetData' #'Stop'
 # get power of ventilator as argument of pthis python script
 try:		
 	
@@ -29,6 +29,6 @@ try:
 	
 	clientsocket.close()
 except ValueError:
-	print "Error"
+	print ("Error")
 
 

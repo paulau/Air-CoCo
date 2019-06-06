@@ -10,6 +10,24 @@
  * */
 
 
+// php under version 5.5.0 does not have hash function update is not always easy.
+// therefore store pass unhashed for old php versions:
+function my_password_hash($passwort)
+	{
+	// checking version could be inserted
+	// keep just not hashed
+	$passwort_hash = $passwort; // = password_hash($passwort, PASSWORD_DEFAULT);
+	return $passwort_hash;
+	}
+
+function my_password_verify($passwort, $PassValue)
+	{
+	$result = ($passwort == $PassValue);  // =  password_verify($passwort, $PassValue)	
+	return $result;
+	}
+
+
+
 class Authorisation  {
 	var $DatabaseName; 
 	var $UsersTable;
@@ -126,7 +144,7 @@ class Authorisation  {
 		if(!$error) {
 			$this->createUsersTable();
 			
-			$passwort_hash = password_hash($passwort, PASSWORD_DEFAULT);
+			$passwort_hash = my_password_hash($passwort);
 			$sql = "INSERT INTO ".$this->DatabaseName. ".users (login, passwort) VALUES ('".$login ."','" . $passwort_hash."');";
 			$result = mysqli_query($this->db, $sql); // or die(mysqli_error());
 			
@@ -150,7 +168,7 @@ class Authorisation  {
 		$PassValue = $row['passwort'];
 
 		//Überprüfung des Passworts	
-		if ( (strlen($UName) >0) && password_verify($passwort, $PassValue)) {
+		if ( (strlen($UName) >0) && my_password_verify($passwort, $PassValue)) {
 			$_SESSION['login'] = $UName;
 			echo("Successful login<br>");
 

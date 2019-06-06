@@ -3,7 +3,10 @@
 
 # usage: 
 
-# sudo python /home/pi/Steuerung-Monitoring/initialiseSQL.py /home/pi/Steuerung-Monitoring/
+# cd folder with programs
+#sudo python initialiseSQL.py  settingsMC.py  xxxmysqlpass
+#or
+#sudo python initialiseSQL.py  settingsRHTCO2.py  xxxmysqlpass 
 
 # The default username is 'root' and by default there is no password.
 # So, no problem to initialize the database, since monicontrol - server 
@@ -90,7 +93,7 @@ def push_settings_into_SQL(SQL, settingsfullfname):
 			command = command + pars
 		i = i + 1
     #print("")
-	#print(command)
+	print(command)
 
 	exequte_sql_request(SQL, command)
 	
@@ -133,18 +136,18 @@ def create_database(SQL, settingsfullfname):
 	print("===============")
 
 SQL = SQLPar()
-settingsfullfname = "settingsMC.py"
 
-if (len(sys.argv)==2):
-	opath  = sys.argv[1]	
-else:
-	opath = os.getcwd() + "/"
+#if (len(sys.argv)==2):
+#	opath  = sys.argv[1]	
+#else:
+#	opath = os.getcwd() + "/"
 
+opath = os.getcwd() + "/"
+settingsfullfname  = sys.argv[1]
+SQL.Passwd = sys.argv[2] # root passwd
 settingsfullfname = opath + settingsfullfname
+
 
 #SQL_test(SQL)
 #settings_test(settingsfullfname)
 create_database(SQL, settingsfullfname)
-
-
-

@@ -2,26 +2,35 @@
 # -*- coding: UTF-8 -*-
 
 """
-The main script, making use of the MoniControl class
+The main script, performing measurements of parameters, control of ventilation
+and communication with clients (programs, eg Web). 
 
 Usage:
 
 This script can be started in command line from any folder 
-or in another script. 
-The full path to the script should be given, if needed. 
+or from another script. The full path to the script should be given, if needed. 
 
 Example of usage:
 
-sudo python /home/pi/Steuerung-Monitoring/monicontrol.py /home/pi/Steuerung-Monitoring/data/ 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &	
+sudo python /home/pi/Air/monicontrol.py settingsMC.py 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
 
-User requested to change the output folder to the external USB memory:
-sudo python /home/pi/Steuerung-Monitoring/monicontrol.py /media/pi/INTENSO/ 1>  /media/pi/INTENSO/tmp_logger_out.txt 2> /media/pi/INTENSO/tmp_logger_err.txt &	
+sudo python /home/pi/Steuerung-Monitoring/monicontrol.py settingsMC-Laden.py 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
 
+or short in terminal in the folder with scripts:
+sudo python monicontrol.py settingsRHTCO2.py 
 
-The one, optional argument, here /home/pi/Steuerung-Monitoring/data/
-is the path to the folder to save the measurements data.
-The data will be saved in the current folder, if the
-argument is not specified. 
+sudo python /home/pi/Air/monicontrol.py settingsRHTCO2.py 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
+
+The one, optional argument, here settingsMC.py or settingsRHTCO2.py  
+is the file with settings.
+
+Depending on the settingsfilename, the corresponding configuration of 
+hardware will be chosen: 
+settingsMC.py			Ventillation at low temperatures in the night. 
+						To cool the building down. Version with wind rain automation
+settingsMC-Laden.py		--.-- Version with humidity sensor. Without window opening. 
+settingsRHTCO2.py		-Air ventilation on the base of CO2 concentration. 
+						for high quality air for people.
 
 It is also reasonable to redirect the console output into some file, 
 here /home/pi/tmp_logger_out.txt and to redirect error output, 
@@ -32,17 +41,39 @@ as this main python script (monicontrol.py).
 """
 
 from datetime import date, timedelta
-from monicontrolclass import *  			# monicontrol logger-controller class
 import signal 							# to process kill signal and exit correctly
 import time, datetime, sys, os 			# import system and date time functions
 import traceback
+from serverAir import *
 
-moniCont = MoniControl("settingsMC.py") # the object of the class MoniControl is initialized
+# settings file name is given as first and only one argument of the script
+# otherwise, the default settings filename is specified:
+if (len(sys.argv)==2):
+	settingsfname  = sys.argv[1]
+else:
+	settingsfname = "settingsMC.py"
+
+# choose accordingly  monicontrol logger-controller class, 
+# create and initialize the object:
+if (settingsfname == "settingsMC.py"):
+	from monicontrolclassA import *  
+	moniCont = MoniControlA(settingsfname)
+
+if (settingsfname == "settingsMC-Laden.py"):
+	from monicontrolclassB import *
+	moniCont = MoniControlB(settingsfname)
+
+if (settingsfname == "settingsRHTCO2.py"):
+	from monicontrolclassC import *
+	moniCont = MoniControlC(settingsfname)
+
+serverAirMoniCont = ServerAirCoCo(moniCont) # the object of the class ServerMoniControl is initialized
 
 # To exit politely (after kill -15 or after ctrl+C):
 def signal_term_handler(signal, frame): 
 	print 'got SIGTERM'	
 	moniCont.clean_and_exit()
+	serverAirMoniCont.clean()
 
 signal.signal(signal.SIGTERM, signal_term_handler) # initialise Sigterm  
 
@@ -75,29 +106,21 @@ while True:
 			time.sleep(waittime) # sleep watitime 
 	except:
 		# oops! Exceptions happen!
-		
 		#  * switch off ventilator 
-		#  * close windows
-		#  * stop control
-		#  * infor about exception is written to the stdout
+		#  * close phisical windows
+		#  * information about exception is written to the stdout
 		#  * email message to administrator is sent
-		
-		GPIO.output(self.P.RelayK1ControlPin, self.RelaySwitchOff) # switch off voltage from ventillator
-		self.close_windows()
-		self.StateOfVentillator = 0 # just information bit, which shows the state of ventillation. 
-									# must be always set at change of ventilation
-
-		self.auto = 0
-
-		var = traceback.format_exc()
-		print (var)
-		print("Oops!",sys.exc_info()[0],"occured.")
+		#  * stop program, otherwise it wil sent emails every 10 sec
+		moniCont.auto = 0
+		msgpart = traceback.format_exc()
+		emsg = msgpart + " exception "  + str(sys.exc_info()[0])
+		print(emsg)
+		serverAirMoniCont.clean()
+		moniCont.stop_ventilation()
 		sys.stdout.flush()			# make output to file
-		
-		emsg = var + " exception " + sys.exc_info()[0]
 		moniCont.send_notification(emsg)
-
-
+		sys.exit()
+		
 		# OTHER WAY OF EXCEPTION HANDLING IS NOT GOOD: AFTER ANY EXCEPTION 
 		# ONE NEEDS TO SWITCH OFF
 		# OTHERWISE POWERFUL VENTILLATORS WILL CAN DO WRONG JOB

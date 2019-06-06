@@ -1,5 +1,8 @@
 <?php
 include ("daoventserver.php");
 $s = new ventserver();
-$s->StateJSON();
+$cmnd = $_GET['cmd'];
+echo $cmnd;
+$s->SendCommand($cmnd);
 ?>
+

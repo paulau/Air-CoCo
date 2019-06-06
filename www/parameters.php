@@ -4,7 +4,7 @@ include('header.html');
 include ("daoparameters.php");
 include ("sqlsettings.php"); // import settings of sql database
 require ("authclass.php"); // import authorisation class
-
+include ("daoventserver.php");
 
 
 //StateTable();
@@ -24,9 +24,24 @@ if ($a->Authorised) {
 	<br>
 	";
 	
+	$s = new ventserver();
+	$deviceName = $s->GetDeviceName();
+	
 	$p = new Parameters($dbhost,$sqluser,$sqlpass,$sqldb);
 	$p->SaveParametersToDatabase();
-	$p->GetParameterForm();	
+
+	if ($deviceName == "MoniControlC")
+		{
+		$p->GetParameterFormMoniControlC();	
+		}
+		
+	if ($deviceName == "MoniControlA")
+		{
+		$p->GetParameterForm();	
+		}
+
+
+
 	}
 
 

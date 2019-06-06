@@ -6,14 +6,17 @@ body
 th, TD 
 {
     FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
-    FONT-SIZE: 11px; fontsize: 12px
+    FONT-SIZE: 11px; fontsize: 20px
 }
+
 
 
 #t01 {
   border: 1px solid black;
   border-collapse: collapse;
 }
+
+
 
 LI 
 {
