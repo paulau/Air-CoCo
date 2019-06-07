@@ -19,7 +19,7 @@ function init() // This is the function the browser first runs when it's loaded.
 		refreshSlide()
 		}, 5000);   // Set the refresh() function to run every 1 seconds.	
 
-	refreshrhtco2() // Then runs the refresh function for the first time.
+	refresh() // Then runs the refresh function for the first time.
 	var int = self.setInterval(function () {
 		refreshrhtco2()
 		}, 1000);   // Set the refresh() function to run every 1 seconds.   
@@ -38,6 +38,19 @@ function refreshSlide() {
 
 
 function refresh() {
+  var objA = document.getElementById('statetableclassA');
+  if (objA != null)	{
+	refreshA();
+	} else {
+	var objC = document.getElementById('statetableclassC');
+	if (objC != null) {
+		refreshC();
+		}
+	}
+}
+
+
+function refreshA() {
 	var currentdate = new Date(); 
 	var datetime = "Last Sync: " + currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
@@ -101,7 +114,8 @@ function sendcmd(cmd) {
 	req.send();
 	}
 
-function refreshrhtco2() {
+function refreshC() {
+	// refresh function for system of class C !RHTCO2 monitoring control
 	var currentdate = new Date(); 
 	var datetime = "Last Sync: " + currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
