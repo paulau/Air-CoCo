@@ -20,6 +20,12 @@ if ($a->Authorised) {
 	if ($deviceName == "MoniControlC")
 		{
 		require ("indexcontentRHTCO2.html"); 
+// TODO  rename ids ins index files eg statetableRHTCO2 and statetableclassA ...
+// check in refresh() of common.js which id is defined and call according function
+// document.getElementById('statetableRHTCO2')  - returns array of more than 0
+// document.getElementById('statetableclassA')  - returns array of more than 0
+// document.getElementById('statetableclassB')  - returns array of more than 0
+		
 		}
 		
 	if ($deviceName == "MoniControlA")

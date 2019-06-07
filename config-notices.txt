@@ -76,6 +76,8 @@ git add file.py
 git rm file.x
 git status
 git commit
+i 
+enter text
 use: Esc :wq Enter to finish commit
 or  fast one line commit:
 git commit -m "Clima Monitoring, Ventilation Control, and Visualisation. Initial commit"
