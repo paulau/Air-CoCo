@@ -3,10 +3,21 @@
 
 # usage: 
 
-# cd folder with programs
-#sudo python initialiseSQL.py  settingsMC.py  xxxmysqlpass
-#or
-#sudo python initialiseSQL.py  settingsRHTCO2.py  xxxmysqlpass 
+"""
+in mysql:
+
+show databases;
+drop user runner;
+drop database AirCoCo;
+
+in commandline:
+cd folder with programs
+sudo python initialiseSQL.py  settingsMC.py  xxxmysqlpass
+or
+sudo python initialiseSQL.py  settingsRHTCO2.py  xxxmysqlpass 
+
+"""
+
 
 # The default username is 'root' and by default there is no password.
 # So, no problem to initialize the database, since monicontrol - server 
@@ -22,11 +33,6 @@
 
 # Below are sql requests to configure mysql database manually using e.g. 
 # commandline mysql client:
-
-#show databases;
-#drop user runner;
-#drop database AirCoCo;
-
 
 #CREATE DATABASE AirCoCo;
 #use AirCoCo 
@@ -83,13 +89,31 @@ def push_settings_into_SQL(SQL, settingsfullfname):
 	i=0
 	while (i<len(list_of_param)):
 		if ((list_of_param[i][0:2]) <> '__'): # eliminate sppecial members, which are not ours
-			pars = "('" + list_of_param[i] + "', '" + str(list_of_values[i]) + "')"
+			
+			if (str(type(list_of_values[i])) == "<type 'list'>"):
+				parvalue = '['
+				j = 0
+				for emailto in list_of_values[i]:
+					if (j>0):
+						parvalue = parvalue  + ','
+					parvalue = parvalue  + '\"' + str(emailto) + '\"'
+					j = j + 1
+				parvalue = parvalue  + ']'
+				print("--------")
+				print("--------")
+				print(parvalue)
+				print("--------")
+			else:
+				parvalue = str(list_of_values[i])
+				
+			pars = "('" + list_of_param[i] + "', '" + parvalue + "')"
 			if (i<len(list_of_param)-1):
 				pars = pars +","
 			else:
 				pars = pars +";"
 					
-			print(list_of_param[i] + " " + str(list_of_values[i])) 
+			print(list_of_param[i] + " " + parvalue)
+			
 			command = command + pars
 		i = i + 1
     #print("")

@@ -40,10 +40,11 @@ class MoniControlBase:
 		
 		#time.sleep(60) 
 		#wait nearly 1 min till mysql server is started
-		try: # try to get parameters from database. 
-			self.ini_parameters_mysql()
-		except: # and get from file if database makes problems
-			self.ini_parameters(settingsfname)
+		#try: # try to get parameters from database. 
+		#	self.ini_parameters_mysql()
+		#except: # and get from file if database makes problems
+		#	self.ini_parameters(settingsfname)
+		self.ini_parameters(settingsfname)
 
 		# set the current folder, if the outputfolder for output files is not specified
 		# in settings fiele:
@@ -88,23 +89,8 @@ class MoniControlBase:
 		#  ****** THE OBJECT self.P CONTAINS NOW ALL PARAMETRS *********
 
 	def initialise_ventilation_devices(self):
-		# **************************************************************
-		# initialise GPIO to control relays and to monitor state of pins. 
-		GPIO.setwarnings(False)
-		GPIO.setmode(GPIO.BCM)  
-		# Attention: some Relay moduls switch Relays on when voltage is Low, then use:
-		self.RelaySwitchOn = GPIO.LOW
-		self.RelaySwitchOff  = GPIO.HIGH
+		pass 
 		
-		# some Relay moduls switch Relays on when voltage is High, then use 
-		#self.RelaySwitchOn = GPIO.HIGH
-		#self.RelaySwitchOff = GPIO.LOW
-		# Set the following GPIO pins as output pins:
-		GPIO.setup(self.P.RelayK1ControlPin, GPIO.OUT, pull_up_down=GPIO.PUD_OFF)		
-		self.stop_ventilation()  		# default state: ventillation off.
-		print("	GPIO for controlling Relay initialisation complete")
-		# **************************************************************
-
 	def initialise_control_variables(self):
 		# ****************  Control variables:  ************************
 		# The following two variables are used in control_ventilation 
@@ -209,15 +195,24 @@ class MoniControlBase:
 
 	# the same script will be used for vsualisation now and for visualisation 
 	# in the end of each day:
-	def visualise_data(self):
+	def visualise_data(self, targetpicfname = ''):
 		if hasattr(self.P, 'webfolder'):
 			self.f.flush()
 			# visualise data:
 			excommand  = 'python ' + self.script_path + '/visu.py' +  ' ' + self.opath + ' ' + self.fname
 			os.system(excommand)
+			print(excommand)
 			# move visualisation files to web folder:
-			excommand = 'mv ' + self.opath + '*.png ' + self.P.webfolder
+			fnamedata = self.opath + self.fname
+			fnamepic = fnamedata.replace("std", "png")
+			
+			if (len(targetpicfname) < 2) :
+				excommand = 'mv ' + fnamepic + " " + self.P.webfolder
+			else: 
+				excommand = 'mv ' + fnamepic + " " + self.P.webfolder + targetpicfname
+				
 			os.system(excommand)
+			print(excommand)
 
 			## move visualisation files to web folder and give new name current.png:
 			#pngname = self.fname.replace('.txt', '.png')
@@ -242,3 +237,11 @@ class MoniControlBase:
 		return self.__class__.__name__;
 		#"each child class must redefine this text as its own name";
 	
+
+def set_bit(intvalue, bit, boolval):
+	if boolval:
+		returnvalue = intvalue | (1<<bit)
+	else:
+		returnvalue = intvalue & ~(1<<bit)
+		
+	return returnvalue

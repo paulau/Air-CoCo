@@ -6,7 +6,7 @@ body
 th, TD 
 {
     FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
-    FONT-SIZE: 11px; fontsize: 20px
+    FONT-SIZE: 15px; 
 }
 
 
@@ -214,4 +214,13 @@ A:hover
 button
 {
   width:250px;
+  height:35px;  
+}
+
+.hdr
+{
+    COLOR: black; 
+    FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    FONT-SIZE: 15px; 
+    FONT-WEIGHT: bold;     
 }

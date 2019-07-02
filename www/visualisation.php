@@ -14,7 +14,12 @@ if ($a->Authorised) {
 	<b>Visualisierung</b>
 	</center>
 	<br>
+	Die Daten werden täglich um 24:00 visualisiert. 
+	<br><br>
+	";
 	
+	/*
+	echo "
 	<br> <a href='datapics/' target=_blank> Archiv, tägliche Darstellung. </a> <br><br>
 	
 	Visualisierung kann bis zu 10 Sekunden dauern. <br><br>
@@ -28,15 +33,17 @@ if ($a->Authorised) {
 	</center>
 	<br>
 	";
+	
+	*/
 
 	// *****************************************************************
 	// the following code sends the command to the ventillationserver
 	// to flush data to make them immediately available for visualisation
 	// and to visualise them. Vent server makes it accordingly
-	
+	/*
 	$service_port = 40012;
 	$address = 'localhost';
-	/* Einen TCP/IP-Socket erzeugen. */
+	// Einen TCP/IP-Socket erzeugen. 
 	$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 	if ($socket === false) {
 		echo "socket_create() fehlgeschlagen: Grund: " . socket_strerror(socket_last_error()) . "\n";
@@ -49,7 +56,7 @@ if ($a->Authorised) {
 	socket_write($socket, $in, strlen($in));
 	socket_close($socket);
 	
-	
+	*/
 
 	// *****************************************************************
 	// The code below prints the archiv of all visualisation files:
@@ -58,20 +65,15 @@ if ($a->Authorised) {
 	$files = scandir($path);
 	$total = count($files); 
 	$images = array(); 
-	
-	
-	
-	/*
-	echo ("<table width=100%><tr><td>");
+
+
 	for($x = 0; $x <= $total; $x++)
 		{
 		if (strpos($files[$x], 'png') !== false) {
-			echo("<a onclick=ActivateImage('". $files[$x] . "')>  ". $files[$x] . "  </a> <br>");
+			echo("<a href='".$path."/".$files[$x] . "' target='_new')>  ". $files[$x] . "  </a> <br>");
 			}
 		}
-
-	echo(" </td><td align='center' valign='center'> <b>Um die Daten von bestimmte Tag zu sehen, <br> klicken Sie auf entsprechende Tag </b> </td></tr></table>");
-	*/
+	
 	
 	}
 	

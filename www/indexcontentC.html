@@ -8,9 +8,9 @@
 	<br>
 	<br>
 	
-	<table id='statetableclassC' align=center border='1px solid black' cellPadding=0 cellSpacing=0 width=100%>
-	<tr bgcolor='#00EE00' >  <th>Datum, Uhrzeit</th> <th>T,°C</th> <th>RH, %</th> <th>CO2</th> <th>Luftung</th> </tr> 
-	<tr><td id='datetime'></td><td id='t'></td><td  id='h'></td><td id='co2' align='center'></td><td id='FanState' align='center'></td></tr></table>
+	<table id='statetableclassC' class='statetable' align=center border='1px solid black' cellPadding=0 cellSpacing=0 width=100%>
+	<tr bgcolor='#00EE00' >  <th class='hdr'>Datum, Uhrzeit</th> <th class='hdr'>T,°C</th> <th class='hdr'>RH, %</th> <th class='hdr'>CO2</th> <th class='hdr'>Luftung</th> </tr> 
+	<tr><td id='datetime' align='center'></td><td id='t' align='center'></td><td  id='h'></td><td id='co2' align='center'></td><td id='FanState' align='center'></td></tr></table>
 	
 	<br>
 	<table align=center width=70%>
@@ -27,12 +27,11 @@
 	</td></tr>
 	</table>
 	
-	<br><br>
 	
 	
 	<table align=center width=70%>
 		<!--<tr><td>Fenster (Auf-Zu): </td> <td> <button type='button' id='Fenster'>Auf-Zu</button> </td> <td></td></tr>-->
-		<tr><td>Regime: </td> <td> <button type='button' id='Auto' width=200px  onclick='sendcmd("Auto")'>Automatic</button></td>  <td> <button type='button' width=200px  onclick='sendcmd("Manually")'>Manuell</button> </td> </tr>
+		<tr><td>Regime: </td> <td> <button type='button' onclick='sendcmd("Auto")'>Automatic</button></td>           <td> <button type='button' onclick='sendcmd("Manually")'>Manuell</button> </td> </tr>
 		<tr><td>Lufter: </td> <td> <button type='button' onclick='sendcmd("StartVentilation")'>Start</button>  </td> <td> <button type='button' onclick='sendcmd("StopVentilation")'>Stop</button> </td></tr>
 	</table>
 	

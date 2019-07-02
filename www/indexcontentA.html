@@ -4,35 +4,52 @@
 	<br>
 	
 	Steuerung und Monitoring Systeme für Gebäudeabkühlung durch Nachtsluftung! 
-	<br>
-	<br>
-	<br>
+	<br><br>
 	
 	<table id='statetableclassA' align=center border='1px solid black' cellPadding=0 cellSpacing=0 width=100%>
-	<tr bgcolor='#00EE00'>  <th>Datum, Uhrzeit</th> <th>Tin</th> <th>Tout</th> <th>Wind-Regen</th> <th>Luftung</th> </tr> 
-	<tr><td id='datetime'></td><td id='tin'></td><td  id='tout'></td><td id='WindRainState' align='center'></td><td id='FanState' align='center'></td></tr></table>
+	<tr bgcolor='#00EE00'>  
+		<th>Datum, Uhrzeit</th> 
+		<th>Tin</th> 
+		<th>Tout</th> 
+		<th>H aussen</th> 
+		<th>Wind-Regen</th> 
+		<th>Luftung</th> </tr> 
+	<tr>
+		<td id='datetime'></td>
+		<td id='tin'></td>
+		<td  id='tout'></td>
+		<td id='houtside' align='center'></td>
+		<td id='WindRainState' align='center'></td>
+		<td id='FanState' align='center'></td>
+	</tr></table>
 	
-	<br><br><br>
 	
-	Die volgende Knopfe sind noch nicht funktionstüchtig. 
-	Die sind da als Vorschlag zu implementieren. <br>
 	<form>
 	<table>
 		<!--<tr><td>Fenster (Auf-Zu): </td> <td> <button type='button' id='Fenster'>Auf-Zu</button> </td> <td></td></tr>-->
 		<tr><td>Regime (Auto-Manuell): </td> <td> <button type='button' id='Auto' width=200px  onclick='sendcmd("Auto")'>Automatic</button></td>  <td> <button type='button' width=200px  onclick='sendcmd("Manually")'>Manuell</button> </td> </tr>
 		<tr><td>Lufter: </td> <td> <button type='button' onclick='sendcmd("StartVentilation")'>Start</button>  </td> <td> <button type='button' onclick='sendcmd("StopVentilation")'>Stop</button> </td></tr>
 		<br>
-		<p  id='Luftung'>tmp</p>
+		
 	</table>
 	</form>
-	
-	<center><img width=600 src='datapics/2019_03_09-2019_04_10.png'></center>
-	<br>
 
-	
-	<!--'WindowOpenMotorState':1,'WindowCloseMotorState':1 
-	<A onclick='refresh()'>Testlink</A> &nbsp -->
+	<center>
+	<table align=center border='1px solid black' cellPadding=0 cellSpacing=0>
+
+	<tr><td width=200> <b>	auto				</b></td>	<td width=50 id='auto'></td>                </tr>
+	<tr><td width=200> <b>	mainOnCondition		</b></td>	<td width=50 id='mainOnCondition'></td>     </tr>
+	<tr><td width=200> <b>	tMinCondition		</b></td>	<td width=50 id='tMinCondition'></td>       </tr>
+	<tr><td width=200> <b>	timeCondition		</b></td>	<td width=50 id='timeCondition'></td>       </tr>
+	<tr><td width=200> <b>	windRainCondition	</b></td>	<td width=50 id='windRainCondition'></td>   </tr>
+	<tr><td width=200> <b>	minOffTimeCondition	</b></td>	<td width=50 id='minOffTimeCondition'></td> </tr>
+	<tr><td width=200> <b>	mainOffCondition	</b></td>	<td width=50 id='mainOffCondition'></td>    </tr>
+	<tr><td width=200> <b>	jonok				</b></td>	<td width=50 id='jonok'></td>               </tr>
+	<tr><td width=200> <b>	joffok				</b></td>	<td width=50 id='joffok'></td>              </tr>
+	<tr><td width=200> <b>	RelayK2State		</b></td>	<td width=50 id='RelayK2State'></td>        </tr>
+	<tr><td width=200> <b>	RelayK3State		</b></td>	<td width=50 id='RelayK3State'></td>        </tr>
+	</table>
+	</center>
 	<br>
 	
 	<P id='title'>  </P>
-	<br>"

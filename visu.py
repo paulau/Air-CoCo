@@ -49,6 +49,8 @@ colorOutside="#0000FF" #
 colorInside='#00FF00' # 
 colorInsideUp='#00FFFF' # 
 
+
+print(ifilesteuerout)
 # control Data
 tr, Values = ReadSplitFileN(ifilesteuerout, 4) #
 Tin = Values[0]
@@ -99,7 +101,8 @@ plt.gcf().autofmt_xdate()
 ax1r1 = ax1.twinx()	
 line5 = ax1r1.plot(tr, VentillatorState, '.', color='r', markersize=3, label=u'Lüftungsanlagezustand') 
 ax1r1.set_yticks([0.0, 0.5, 1.0])
-ax1r1.set_ylim([0.1, 1.1])	
+ax1r1.set_ylim([-0.1, 1.1])	
+ax1r1.set_ylabel(u'1 - on, 0 - off (red) ')
 
 print(d1)
 print(d2)
@@ -107,16 +110,13 @@ print(d2)
 ax1r1.set_xlim([d1, d2])	
 
 ## inverse logic
-#i = 0
-#for val in WindRainState:
-#	v = float(val)
-#	if (v<0.1):
-#		WindRainState[i] = 0.95
-#	else:
-#		WindRainState[i] = 0.0	
-#	i = i + 1	
+i = 0
+for val in WindRainState:
+	v = -(float(val) - 1.0)
+	WindRainState[i] = v
+	i = i + 1	
 
-line7 = ax1r1.plot(tr, WindRainState, '.', color='#FFA500', markersize=10, label=u'Regen oder Wind')
+line7 = ax1r1.plot(tr, WindRainState, '.', color='#FFA500', markersize=3, label=u'Regen oder Wind')
 lns = line1 + line2
 lns = lns + line5 + line7 # + line4
 labs = [l.get_label() for l in lns]

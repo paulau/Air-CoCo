@@ -12,7 +12,7 @@ or from another script. The full path to the script should be given, if needed.
 
 Example of usage:
 
-sudo python /home/pi/Air/monicontrol.py settingsMC.py 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
+sudo python /home/pi/Steuerung-Monitoring/monicontrol.py settingsMC.py 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
 
 sudo python /home/pi/Steuerung-Monitoring/monicontrol.py settingsMC-Laden.py 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
 

@@ -122,6 +122,13 @@ class Parameters {
 		
 		$this->printParameterLine("internettype");
 		$this->printParameterLine("description");
+
+		$this->printSectionName("Email notification parameters:");
+		
+		$this->printParameterLine("emailsto");
+		$this->printParameterLine("emailfrom");
+		$this->printParameterLine("mailserver");
+		$this->printParameterLine("passwmail");
 		
 		echo '
 			</table>    
@@ -234,21 +241,21 @@ class Parameters {
 	// second argument - result of sql request - "table of all parameters"
 		{
 		echo '<tr bgcolor=#F8F8F8>
-		<td valign="top" width="100">';
+		<td valign="top" width="200">';
 		echo $name;
-		echo '</td>
-		<td>
-		<input type="text" name="';
-		echo  $name .'" value="'.$this->table[$name].'"  id= formfield>';
-		echo '
+		echo "</td>
+		<td  width='195' >
+		<input type='text' name='";
+		echo  $name ."' value='".$this->table[$name]."'  id= formfield>";
+		echo "
 		</td>
-		</tr>';
+		</tr>";
 		}
 	
 	function printSectionName($sname)
 		{
 		echo "</table>";
-		echo "<table><tr><td valign='top' width='275' bgcolor=#AAAAAA><b>" . $sname . "</b></td></tr></table>";
+		echo "<table><tr><td valign='top' width='400' bgcolor=#AAAAAA><b>" . $sname . "</b></td></tr></table>";
 		echo "<table>";
 		}
 	

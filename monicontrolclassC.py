@@ -2,7 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 """
-Description: Code for the system for logging, controlling, and CO2-Ampel, based on:
+Description: Code for the system of ventilation or rooms with people.
+logging, controlling, and light notifications about bad air, based on:
 Temperature: K30 CO2 Sensor
 Temperature and humidity: DHT22
 Optionally: HYT

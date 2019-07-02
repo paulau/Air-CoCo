@@ -74,7 +74,7 @@ class ServerAirCoCo(threading.Thread):
 					# to visualise the current measurements data 
 					# The required operation here is just 
 					# flush of the buffer into the current ouptput file:
-					self.mc.visualise_data()
+					self.mc.visualise_data('current.png')
 
 				if buf=='Reboot': 
 					excommand = 'sudo reboot'

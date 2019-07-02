@@ -1,3 +1,9 @@
+ - Web GUI for smartphones
+ - web gui better for desctop
+ - classD - system with continuous control of motor
+
+ - Multithreading check joint use of parameters
+
  - at kill -15 processid two times CleanAndExit! Not nice check
 
  -  Parameters from database:

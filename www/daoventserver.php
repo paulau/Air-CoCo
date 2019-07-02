@@ -23,14 +23,14 @@ class ventserver {
 		socket_close($this->socket);
 		}
 
-	function StateJSON()
+	function GetState() // json has shown drawbacks! too big! therefore made general! different format
 		{
 		$in = "GetData";
 		$out = '';
 		//echo "HTTP HEAD request senden ...<br>";
 		socket_write($this->socket, $in, strlen($in));
 		//echo "Serverantwort lesen:\n\n<br>";
-		$out = socket_read($this->socket, 256);
+		$out = socket_read($this->socket, 64);
 		echo $out;
 		}
 
@@ -51,7 +51,7 @@ class ventserver {
 		//echo "HTTP HEAD request senden ...<br>";
 		socket_write($this->socket, $in, strlen($in));
 		//echo "Serverantwort lesen:\n\n<br>";
-		$out = socket_read($this->socket, 256);
+		$out = socket_read($this->socket, 64);
 		return $out;
 		}
 

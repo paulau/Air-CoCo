@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 """
-Description: Code for the system based on:
+Description: Code for the system of building cooling  via night ventilation based on:
 one DS18B20 Temperature sensor
 one SHT 31-D Temperature and  humidity sensor
 Relay 
@@ -16,6 +16,25 @@ class MoniControlB(MoniControlBase):
 		self.initialise_output_header()
 		self.sensor_in = SensorDS18B20(self.P.sensor_inside_id)
 		self.sensor_out = sensorSHT31D(self.P.sensor_outside_id)
+
+	def initialise_ventilation_devices(self):
+		# **************************************************************
+		# initialise GPIO to control relays and to monitor state of pins. 
+		GPIO.setwarnings(False)
+		GPIO.setmode(GPIO.BCM)  
+		# Attention: some Relay moduls switch Relays on when voltage is Low, then use:
+		self.RelaySwitchOn = GPIO.LOW
+		self.RelaySwitchOff  = GPIO.HIGH
+		
+		# some Relay moduls switch Relays on when voltage is High, then use 
+		#self.RelaySwitchOn = GPIO.HIGH
+		#self.RelaySwitchOff = GPIO.LOW
+		# Set the following GPIO pins as output pins:
+		GPIO.setup(self.P.RelayK1ControlPin, GPIO.OUT, pull_up_down=GPIO.PUD_OFF)		
+		self.stop_ventilation()  		# default state: ventillation off.
+		print("	GPIO for controlling Relay initialisation complete")
+		# **************************************************************
+
 
 	def initialise_output_header(self):
 		# creates header file for the output files		
@@ -146,7 +165,8 @@ class MoniControlB(MoniControlBase):
 			if ((self.jonok>5)):  # 5 measuraments, condition to switch on is satisfied. 						
 								# then 'switch on' ventilation
 				self.start_ventilation()
-				jonok = 0 
+				# bug 23.06.2019 was without self
+				self.jonok = 0 
 			
 			
 			# switch off of ventilator must be done immidiately as soon as 
