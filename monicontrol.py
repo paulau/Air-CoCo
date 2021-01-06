@@ -13,8 +13,14 @@ or from another script. The full path to the script should be given, if needed.
 Example of usage:
 
 sudo python /home/pi/Steuerung-Monitoring/monicontrol.py settingsMC.py 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
+or to read data from SQL:
+sudo python /home/pi/Steuerung-Monitoring/monicontrol.py settingsMCSQL 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
+
+
 
 sudo python /home/pi/Steuerung-Monitoring/monicontrol.py settingsMC-Laden.py 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
+or to read data from SQL:
+sudo python /home/pi/Steuerung-Monitoring/monicontrol.py settingsMC-LadenSQL 1>  /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
 
 or short in terminal in the folder with scripts:
 sudo python monicontrol.py settingsRHTCO2.py 
@@ -51,19 +57,19 @@ from serverAir import *
 if (len(sys.argv)==2):
 	settingsfname  = sys.argv[1]
 else:
-	settingsfname = "settingsMC.py"
+	sys.exit()
 
 # choose accordingly  monicontrol logger-controller class, 
 # create and initialize the object:
-if (settingsfname == "settingsMC.py"):
+if (settingsfname == "settingsMC.py") or (settingsfname == "settingsMCSQL"):
 	from monicontrolclassA import *  
 	moniCont = MoniControlA(settingsfname)
 
-if (settingsfname == "settingsMC-Laden.py"):
+if (settingsfname == "settingsMC-Laden.py") or (settingsfname == "settingsMC-LadenSQL"):
 	from monicontrolclassB import *
 	moniCont = MoniControlB(settingsfname)
 
-if (settingsfname == "settingsRHTCO2.py"):
+if (settingsfname == "settingsRHTCO2.py") or (settingsfname == "settingsRHTCO2SQL"):
 	from monicontrolclassC import *
 	moniCont = MoniControlC(settingsfname)
 
