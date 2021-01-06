@@ -36,15 +36,16 @@ class MoniControlBase:
 # if FAST then system will not Save into files or into usual Datenerfassung.RHTCO2
 # it will store into FAST table instead. 
 
- 		
+		if (settingsfname.find('.')!=-1 ):
+			self.ini_parameters(settingsfname)
+			#if filename is given, then read parameters from file
+			#else (if SQL Identification word is given), then read from sql
+		else:
+			time.sleep(10) 
+			#wait nearly 1 min till mysql server is started
+			self.ini_parameters_mysql(settingsfname)
+			
 		
-		#time.sleep(60) 
-		#wait nearly 1 min till mysql server is started
-		#try: # try to get parameters from database. 
-		#	self.ini_parameters_mysql()
-		#except: # and get from file if database makes problems
-		#	self.ini_parameters(settingsfname)
-		self.ini_parameters(settingsfname)
 
 		# set the current folder, if the outputfolder for output files is not specified
 		# in settings fiele:
@@ -82,9 +83,9 @@ class MoniControlBase:
 		#  **************** OF THE settings*.py file *******************
 		#  *************************************************************
 
-	def ini_parameters_mysql(self):
+	def ini_parameters_mysql(self, settingsname): 
 		print("	parametrs from sql will now be initialised")
-		self.P = ParametersFromSQL()
+		self.P = ParametersFromSQL(settingsname)
 		print("	parametrs from sql are initialised")
 		#  ****** THE OBJECT self.P CONTAINS NOW ALL PARAMETRS *********
 
