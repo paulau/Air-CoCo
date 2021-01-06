@@ -37,7 +37,7 @@ class MoniControlC(MoniControlBase):
 
 		print("gpio set as out")
 		if (hasattr(self.P, 'VentControlPin')):
-			GPIO.setup(self.P.VentControlPin, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN) 
+			GPIO.setup(self.P.VentControlPin, GPIO.OUT, pull_up_down=GPIO.PUD_OFF) 
 											# pull down to allways off if not active
 		print("c constr done")
 

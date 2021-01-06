@@ -6,7 +6,9 @@ Description: Code for the system of building cooling  via night ventilation, bas
 wind rain sensor, 
 opening closing windows, 
 ventilator 
-two DS18B20 sensors 
+one DS18B20 
+and one SHT31D
+sensors
 """
 
 from monicontrolclass import *  			# Base monicontrol logger-controller class
@@ -31,6 +33,7 @@ class MoniControlA(MoniControlBase):
 		self.h_outside = 0.0
 		self.auto = 1
 		self.mainOnCondition = 1 
+		self.humidityCondition = 1 
 		self.tMinCondition = 1
 		self.timeCondition = 1
 		self.windRainCondition = 1
@@ -218,6 +221,8 @@ class MoniControlA(MoniControlBase):
 			# the difference of temperatures outside and inside reached the desired value. 
 			# to start ventilation only, if it makes sence. 
 			
+			self.humidityCondition = self.h_outside < self.P.MaxHumidity
+			
 			self.tMinCondition = self.t_inside > self.P.Tmin
 			# The temperature inside is higher, than some reasonable for people Tmin value
 			
@@ -232,7 +237,7 @@ class MoniControlA(MoniControlBase):
 			self.minOffTimeCondition = (Now-self.lastSwitchOffTime)>self.MinOffTimeDateTime
 			
 			# add to switchon counter, if all conditions are satisfied:
-			if ( self.mainOnCondition & self.timeCondition & self.tMinCondition & self.minOffTimeCondition):
+			if ( self.mainOnCondition & self.timeCondition & self.tMinCondition & self.minOffTimeCondition & self.humidityCondition):
 				self.jonok = self.jonok + 1
 				self.joffok = 0  # start to count again
 			
@@ -242,7 +247,7 @@ class MoniControlA(MoniControlBase):
 			# the difference of temperatures is less than TdifferenceOff
 			
 			# add to switchoff counter, if all conditions are satisfied:
-			if (self.mainOffCondition | (not self.tMinCondition) | (not self.timeCondition)):
+			if (self.mainOffCondition | (not self.tMinCondition) | (not self.timeCondition) | (not self.humidityCondition)):
 				self.joffok = self.joffok + 1
 				self.jonok = 0  # start to count again
 			
