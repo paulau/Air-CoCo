@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-import datetime
-
 # Parameters of Sensors and relays:
 
 CO2_ADDR = 0x60  # Attention! Very specific setting for one or two reconfigured sensors.
@@ -76,8 +74,12 @@ y1max=80
 dpivalue=96 #150
 tex = False
 ymax =  1400
-d1 = datetime.datetime(2018, 9, 24, 17, 00) 
-d2 = datetime.datetime(2018, 9, 25, 17, 00) 
+d1 = '2018-09-24 17:00' 
+d2 = '2018-09-25 17:00'
+
+# incorporate into code, where necessary:
+#import datetime
+#xd1 = datetime.datetime.strptime(d1, '%Y-%m-%d %H:%M') #  %H:%M
 
 # Other Parameters:
 internettype = 2 # 1 - Ethernet 2 - WiFi 3 - MobileBroadband

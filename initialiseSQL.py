@@ -1,21 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# usage: 
-
 """
-in mysql:
+To be used at very first initialization of the system: 
 
-show databases;
-drop user runner;
-drop database AirCoCo;
 
 in commandline:
 cd folder with programs
-sudo python initialiseSQL.py  settingsMC.py  xxxmysqlpass
+sudo python initialiseSQL.py  settingsMC.py  xxx
 or
-sudo python initialiseSQL.py  settingsRHTCO2.py  xxxmysqlpass 
+sudo python initialiseSQL.py  settingsRHTCO2.py  xxx
 
+where xxx is mysqlpass for the user root
 """
 
 
@@ -26,9 +22,9 @@ sudo python initialiseSQL.py  settingsRHTCO2.py  xxxmysqlpass
 # The Web-layer works however under restricted rights and the user runner
 # is created specially for this layer. 
 
-# This script checks wether the database exists.
-# if not, then it creates it and fills its Table Parameters with the 
-# Parameternames and values taken from settingsMC.py file. 
+# This script resets the database and
+# fills its Table Parameters with the 
+# Parameternames and values taken from settings*.py file, specified in argument. 
 # there are also some test functions
 
 # Below are sql requests to configure mysql database manually using e.g. 
@@ -159,6 +155,19 @@ def create_database(SQL, settingsfullfname):
 
 	print("===============")
 
+def create_table(SQL, settingsfullfname):
+	try:
+		# Database does not exist create it:
+		con = MySQLdb.connect(SQL.Server, SQL.User, SQL.Passwd)
+		cur = con.cursor()
+		command = "CREATE TABLE " + SQL.Database + ".Parameters(Id INT PRIMARY KEY AUTO_INCREMENT, ParameterName CHAR(255), ParameterValue CHAR(255));"
+		cur.execute(command)		
+		con.close()
+		push_settings_into_SQL(SQL, settingsfullfname)
+	except:
+		pass
+
+
 SQL = SQLPar()
 
 #if (len(sys.argv)==2):
@@ -171,7 +180,11 @@ settingsfullfname  = sys.argv[1]
 SQL.Passwd = sys.argv[2] # root passwd
 settingsfullfname = opath + settingsfullfname
 
+# clean Database(assumed to be used only at very first initialization):
+exequte_sql_request(SQL, "drop user runner;")
+exequte_sql_request(SQL, "drop database AirCoCo;")
 
 #SQL_test(SQL)
 #settings_test(settingsfullfname)
 create_database(SQL, settingsfullfname)
+create_table(SQL, settingsfullfname)
