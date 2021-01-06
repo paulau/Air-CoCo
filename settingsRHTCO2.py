@@ -32,7 +32,8 @@ CO2LimitOff = 1000 # IDA 1
 LoggingInterval = 1
 SaveInterval = "%d" #  "%M" "%d" save every new day, "%H" save every new Hour
 fileprefix = "messung001_"
-outputfolder = '/home/pi/Air/data/'				# to save the measurementsdata
+outputfolder = '/home/pi/Steuerung-Monitoring/data/'				# to save the measurementsdata
+
 
 # Parameters of central server:
 FTPfolder = "I23"
