@@ -8,7 +8,13 @@ git clone https://github.com/paulau/Air-CoCo.git Steuerung-Monitoring1
 in shell:
 nano /etc/rc.local
 insert line like:
-sudo python /home/pi/Steuerung-Monitoring/monicontrol.py /home/pi/Steuerung-Monitoring/data/ 1>  /home/pi/tmp_out.txt 2> /home/pi/tmp_err.txt &
+sudo python /home/pi/Steuerung-Monitoring/monicontrol.py settingsRHTCO2.py 1> /home/pi/tmp_logger_out.txt 2> /home/pi/tmp_logger_err.txt &
+
+If desired, initialise the database using: 
+python initialiseSQL.py  settingsRHTCO2.py xxx
+where xxx is root password for mysql server
+use with settingsRHTCO2SQL to read parameters from SQL Databese.
+
 note: the output into external USB Media is used see comment in monicontrol.py
 
 3) Install apache, MySQL, php.

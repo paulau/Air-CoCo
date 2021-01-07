@@ -224,3 +224,32 @@ button
     FONT-SIZE: 15px; 
     FONT-WEIGHT: bold;     
 }
+
+
+.nicetablecellodd {
+  background-color: #eeeeee;
+  text-align: left;  
+  FONT-WEIGHT: bold;
+}
+
+
+.nicetablecelleven {
+  background-color: #ffffff;
+  text-align: left;  
+  FONT-WEIGHT: bold;  
+}
+
+.nicetablecolumns {  
+  border-top:1px solid green;  
+}
+
+
+.nicetablecolumns {
+  border-top:1px solid green;  
+}
+
+.nicetablecolumnslastline {
+  border-top:1px solid green;  
+  border-bottom:1px solid green;  
+}
+

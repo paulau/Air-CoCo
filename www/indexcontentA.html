@@ -3,24 +3,28 @@
 	</center>
 	<br>
 	
-	Steuerung und Monitoring Systeme für Gebäudeabkühlung durch Nachtsluftung! 
+	Steuerung und Monitoring Systeme für Gebäudeabkühlung durch Nachtslüftung! 
 	<br><br>
 	
 	<table id='statetableclassA' align=center border='1px solid black' cellPadding=0 cellSpacing=0 width=100%>
 	<tr bgcolor='#00EE00'>  
-		<th>Datum, Uhrzeit</th> 
-		<th>Tin</th> 
-		<th>Tout</th> 
-		<th>H aussen</th> 
-		<th>Wind-Regen</th> 
-		<th>Luftung</th> </tr> 
+		<th width=200px>Datum, Uhrzeit</th> 
+		<th>Zustand der Anlage:</th> 
+	</tr> 
 	<tr>
-		<td id='datetime'></td>
-		<td id='tin'></td>
-		<td  id='tout'></td>
-		<td id='houtside' align='center'></td>
-		<td id='WindRainState' align='center'></td>
-		<td id='FanState' align='center'></td>
+		<td id='datetime' align=center></td>
+		<td>
+		<table cellspacing=10px cellpadding=10px width=100%> <tr><td>
+		<table width=100%  cellspacing="0" cellpadding="0">
+			<tr class="nicetablecelleven">	<td width=200px>Tin</td> 					<td class="nicetablecolumns" id='tin'></td>				<td class="nicetablecolumns">°C</td></tr>
+			<tr class="nicetablecellodd">	<td width=200px>Tout</td> 					<td class="nicetablecolumns" id='tout'></td>			<td class="nicetablecolumns">°C</td></tr>
+			<tr class="nicetablecelleven">	<td width=200px>Feuchtigkeit draußen</td> 	<td class="nicetablecolumns" id='houtside'></td>		<td class="nicetablecolumns">%</td></tr>
+			<tr class="nicetablecellodd">	<td width=200px>Wind-Regen</td> 			<td class="nicetablecolumns" id='WindRainState'></td>	<td class="nicetablecolumns"></td></tr>
+			<tr class="nicetablecelleven">	<td width=200px>Lüftung</td> 				<td class="nicetablecolumns" id='FanState'></td>		<td class="nicetablecolumns"></td></tr>
+			<tr class="nicetablecellodd">	<td width=200px>Automatic</td> 				<td class="nicetablecolumnslastline" id='auto'></td>	<td class="nicetablecolumnslastline"></td></tr>
+		</table>
+		</td></tr></table>
+		</td>
 	</tr></table>
 	
 	
@@ -35,9 +39,7 @@
 	</form>
 
 	<center>
-	<table align=center border='1px solid black' cellPadding=0 cellSpacing=0>
-
-	<tr><td width=200> <b>	auto				</b></td>	<td width=50 id='auto'></td>                </tr>
+	<table align=center border='1px solid black' cellPadding=0 cellSpacing=0 style="display:none">
 	<tr><td width=200> <b>	mainOnCondition		</b></td>	<td width=50 id='mainOnCondition'></td>     </tr>
 	<tr><td width=200> <b>	tMinCondition		</b></td>	<td width=50 id='tMinCondition'></td>       </tr>
 	<tr><td width=200> <b>	timeCondition		</b></td>	<td width=50 id='timeCondition'></td>       </tr>
@@ -50,6 +52,7 @@
 	<tr><td width=200> <b>	RelayK3State		</b></td>	<td width=50 id='RelayK3State'></td>        </tr>
 	</table>
 	</center>
+
 	<br>
 	
 	<P id='title'>  </P>

@@ -49,9 +49,7 @@ class MoniControlBase:
 			#wait nearly 1 min till mysql server is started
 			self.ini_parameters_mysql(settingsfname)
 			
-			
-			print(self.P.emailfrom)
-		
+
 
 		# set the current folder, if the outputfolder for output files is not specified
 		# in settings fiele:
@@ -124,11 +122,7 @@ class MoniControlBase:
 			except:
 				pass 
 
-
-
-		print(pydictionary)
 		PP = type("PP", (), pydictionary)
-		
 		self.P = PP() # ParametersFromSQL(settingsname)		
 		print("	parametrs from sql are initialised")
 		#  ****** THE OBJECT self.P CONTAINS NOW ALL PARAMETRS *********

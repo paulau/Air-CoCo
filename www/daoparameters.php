@@ -102,6 +102,7 @@ class Parameters {
 		$this->printParameterLine("TdifferenceOff");
 		$this->printParameterLine("OpeningTime");
 		$this->printParameterLine("Tmin");
+		$this->printParameterLine("MaxHumidity");
 		
 		$this->printSectionName("Logging parameters:");
 		
