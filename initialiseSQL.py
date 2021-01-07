@@ -12,6 +12,9 @@ or
 sudo python initialiseSQL.py  settingsRHTCO2.py  xxx
 
 where xxx is mysqlpass for the user root
+xxx is "", if the rootpassword is not defined
+or reset to: 
+SET PASSWORD FOR root@localhost=PASSWORD('');
 """
 
 

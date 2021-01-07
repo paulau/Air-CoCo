@@ -11,11 +11,15 @@ Description:
 
 import RPi.GPIO as GPIO			# GPIO functions
 import time, datetime, sys, os  # system  and time functions
-import imp  					# to read the variables from py files
+import imp							# to read the variables from py files
 from datetime import date, timedelta
 import glob
-from getsettingsfromSQL import *
+#from getsettingsfromSQL import *
 from sensorAir import *
+import MySQLdb
+from SQLParameters import *
+
+
 
 
 class MoniControlBase:
@@ -27,14 +31,14 @@ class MoniControlBase:
 		# to get settings file from the same path:
 		self.script_path = os.path.dirname(os.path.abspath(__file__))
 
-#sqlinit of all tables is needed
-#CREATE TABLE Datenerfassung.uploads(Id INT PRIMARY KEY AUTO_INCREMENT, FullFileNameToUpload VARCHAR(255), FTPUser VARCHAR(30), FTPPassword VARCHAR(30),  FTPFolderToUpload VARCHAR(255));
-#GRANT ALL PRIVILEGES ON Datenerfassung.* TO 'logger'; 
-#exit;
+		#sqlinit of all tables is needed
+		#CREATE TABLE Datenerfassung.uploads(Id INT PRIMARY KEY AUTO_INCREMENT, FullFileNameToUpload VARCHAR(255), FTPUser VARCHAR(30), FTPPassword VARCHAR(30),  FTPFolderToUpload VARCHAR(255));
+		#GRANT ALL PRIVILEGES ON Datenerfassung.* TO 'logger'; 
+		#exit;
 
-# FAST regime to think about. ???
-# if FAST then system will not Save into files or into usual Datenerfassung.RHTCO2
-# it will store into FAST table instead. 
+		# FAST regime to think about. ???
+		# if FAST then system will not Save into files or into usual Datenerfassung.RHTCO2
+		# it will store into FAST table instead. 
 
 		if (settingsfname.find('.')!=-1 ):
 			self.ini_parameters(settingsfname)
@@ -45,6 +49,8 @@ class MoniControlBase:
 			#wait nearly 1 min till mysql server is started
 			self.ini_parameters_mysql(settingsfname)
 			
+			
+			print(self.P.emailfrom)
 		
 
 		# set the current folder, if the outputfolder for output files is not specified
@@ -85,7 +91,45 @@ class MoniControlBase:
 
 	def ini_parameters_mysql(self, settingsname): 
 		print("	parametrs from sql will now be initialised")
-		self.P = ParametersFromSQL(settingsname)
+		
+		SQL = SQLPar() # here are all sql settings
+		con = MySQLdb.connect(SQL.Server, SQL.User, SQL.Passwd, SQL.Database)
+		cur = con.cursor()
+		command = "SELECT * FROM "+SQL.Database+".Parameters;"
+		cur.execute(command)
+		# fetch all of the rows from the query
+		data = cur.fetchall()
+		con.close()
+		
+		# database exists. 
+		# first direct initialisation of all parameters. 
+		# may be later better:
+		#print pydictionary		
+		
+		pydictionary = {}
+		for i in range(0,len(data)):
+			pydictionary[data[i][1]] = data[i][2] # generally, all variables are strings, but:
+			try:  # it can be float
+				pydictionary[data[i][1]] = float(data[i][2])
+			except:
+				pass 
+				
+			try:  # it can be int
+				pydictionary[data[i][1]] = int(data[i][2])
+			except:
+				pass 
+				
+			try:  # it can be expression
+				pydictionary[data[i][1]] = eval(data[i][2])
+			except:
+				pass 
+
+
+
+		print(pydictionary)
+		PP = type("PP", (), pydictionary)
+		
+		self.P = PP() # ParametersFromSQL(settingsname)		
 		print("	parametrs from sql are initialised")
 		#  ****** THE OBJECT self.P CONTAINS NOW ALL PARAMETRS *********
 
